@@ -1,10 +1,13 @@
 import React from 'react'
 
-import { ReactGridster } from 'react-gridster'
+import { Gridster, GridsterConfig } from 'react-gridster'
 import 'react-gridster/dist/index.css'
 
 const App = () => {
-  return <ReactGridster text="Create React Library Example 😄" />
+  const options: GridsterConfig = {
+    gridType: 'fit'
+  }
+  return <Gridster options={options} />
 }
 
 export default App

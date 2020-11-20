@@ -1,10 +1,34 @@
 import * as React from 'react'
 import styles from './styles.module.css'
 
-interface Props {
-  text: string
+export type gridTypes = 'fit' | 'scrollVertical' | 'scrollHorizontal' | 'fixed' | 'verticalFixed' | 'horizontalFixed';
+
+export interface GridsterConfig {
+  gridType: gridTypes;
 }
 
-export const ReactGridster = ({ text }: Props) => {
-  return <div className={styles.test}>Example Component: {text}</div>
+interface Props {
+  options: GridsterConfig;
 }
+
+export class Gridster extends React.Component<Props> {
+
+  constructor(props: Props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
+        <div className={styles.gridsterColumn}></div>
+        <div className={styles.gridsterRow}></div>
+      </div>
+    )
+  }
+}
+
+// export const Gridster = ({ options }: Props) => {
+//   return <div className={styles.test}>
+    
+//   </div>
+// }

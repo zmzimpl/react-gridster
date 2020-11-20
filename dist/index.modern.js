@@ -1,13 +1,21 @@
-import { createElement } from 'react';
+import { Component, createElement } from 'react';
 
-var styles = {"test":"_3ybTi"};
+var styles = {"fit":"_styles-module__fit__2cIYj","scrollVertical":"_styles-module__scrollVertical__2BhiX","scrollHorizontal":"_styles-module__scrollHorizontal__3XPdq","fixed":"_styles-module__fixed__2lylp","mobile":"_styles-module__mobile__2RmiB","gridsterColumn":"_styles-module__gridsterColumn__2PdEo","gridsterRow":"_styles-module__gridsterRow__k3kT0","displayGrid":"_styles-module__displayGrid__3X7y5"};
 
-var ExampleComponent = function ExampleComponent(_ref) {
-  var text = _ref.text;
-  return createElement("div", {
-    className: styles.test
-  }, "Example Component: ", text);
-};
+class Gridster extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-export { ExampleComponent };
+  render() {
+    return createElement("div", null, createElement("div", {
+      className: styles.gridsterColumn
+    }), createElement("div", {
+      className: styles.gridsterRow
+    }));
+  }
+
+}
+
+export { Gridster };
 //# sourceMappingURL=index.modern.js.map
