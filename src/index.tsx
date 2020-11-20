@@ -5,6 +5,6 @@ interface Props {
   text: string
 }
 
-export const ExampleComponent = ({ text }: Props) => {
+export const ReactGridster = ({ text }: Props) => {
   return <div className={styles.test}>Example Component: {text}</div>
 }
