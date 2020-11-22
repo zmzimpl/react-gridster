@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { Gridster, GridsterConfig } from 'react-gridster'
+import { Gridster } from 'react-gridster'
 import 'react-gridster/dist/index.css'
+import { GridsterConfig } from '../../dist/gridsterConfig.interface'
 
 const App = () => {
   const options: GridsterConfig = {

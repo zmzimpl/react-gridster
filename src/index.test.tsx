@@ -1,7 +1,7 @@
-import { ExampleComponent } from '.'
+import { Gridster } from '.'
 
-describe('ExampleComponent', () => {
+describe('Gridster', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
+    expect(Gridster).toBeTruthy()
   })
 })
