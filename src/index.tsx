@@ -19,7 +19,7 @@ export class Gridster extends React.Component<Props> {
 
   render() {
     return (
-      <div>
+      <div className={styles.gridster}>
         <div className={styles.gridsterColumn}></div>
         <div className={styles.gridsterRow}></div>
       </div>
