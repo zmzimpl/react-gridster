@@ -61,11 +61,11 @@ export class Renderer {
     el: any,
     style: string,
     value: any,
-    flags: RendererStyleFlags2
+    flags?: RendererStyleFlags2
   ): void {
     style = style.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
     const styleMap = _readStyleAttribute(el)
-    if (flags & RendererStyleFlags2.Important) {
+    if (flags && RendererStyleFlags2.Important) {
       value += ' !important'
     }
     styleMap[style] = value == null ? '' : value

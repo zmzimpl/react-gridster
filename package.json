@@ -7,7 +7,7 @@
   "repository": "zmzimpl/react-gridster",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
-  "source": "src/index.tsx",
+  "source": "src/Gridster.tsx",
   "engines": {
     "node": ">=10"
   },

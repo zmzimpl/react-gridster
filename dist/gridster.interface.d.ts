@@ -1,11 +1,9 @@
 import { GridsterConfigS } from './gridsterConfigS.interface';
-import { ChangeDetectorRef, NgZone, Renderer2 } from '@angular/core';
-import { GridsterEmptyCell } from './gridsterEmptyCell.service';
-import { GridsterCompact } from './gridsterCompact.service';
 import { GridsterConfig } from './gridsterConfig.interface';
 import { GridsterItem } from './gridsterItem.interface';
 import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
-import { GridsterRenderer } from './gridsterRenderer.service';
+import { GridsterRenderer } from './gridsterRenderer';
+import { Renderer } from './utils/renderer';
 export declare abstract class GridsterComponentInterface {
     $options: GridsterConfigS;
     grid: Array<GridsterItemComponentInterface>;
@@ -19,9 +17,8 @@ export declare abstract class GridsterComponentInterface {
     findItemsWithItem: (item: GridsterItem) => Array<GridsterItemComponentInterface>;
     checkGridCollision: (item: GridsterItem) => boolean;
     el: any;
-    renderer: Renderer2;
+    renderer: Renderer;
     gridRenderer: GridsterRenderer;
-    cdRef: ChangeDetectorRef;
     options: GridsterConfig;
     calculateLayoutDebounce: () => void;
     updateGrid: () => void;
@@ -39,9 +36,6 @@ export declare abstract class GridsterComponentInterface {
     windowResize: (() => void) | null;
     setGridDimensions: (() => void);
     dragInProgress: boolean;
-    emptyCell: GridsterEmptyCell;
-    compact: GridsterCompact;
-    zone: NgZone;
     gridRows: Array<number>;
     gridColumns: Array<number>;
 }
