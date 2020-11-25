@@ -21,4 +21,5 @@ export declare class Renderer {
     addClass(el: any, name: string): void;
     removeClass(el: any, name: string): void;
     setStyle(el: any, style: string, value: any, flags?: RendererStyleFlags2): void;
+    listen(target: 'window' | 'document' | 'body' | any, event: string, callback: (event: any) => boolean): () => void;
 }

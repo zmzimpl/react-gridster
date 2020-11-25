@@ -71,6 +71,18 @@ export class Renderer {
     styleMap[style] = value == null ? '' : value
     _writeStyleAttribute(el, styleMap)
   }
+
+  
+  listen(target: 'window'|'document'|'body'|any, event: string, callback: (event: any) => boolean): () => void {
+    console.log(target);
+    console.log(event);
+    console.log(callback);
+    const fn = () => {
+
+    }
+    return fn;
+  }
+
 }
 
 function _readStyleAttribute(element: any): { [name: string]: string } {

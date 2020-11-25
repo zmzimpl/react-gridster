@@ -5,6 +5,8 @@ import { GridsterRenderer } from './gridsterRenderer';
 import { GridsterItem } from './gridsterItem.interface';
 import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
 import { Renderer } from './utils/renderer';
+import { GridsterEmptyCell } from './gridsterEmptyCell';
+import { GridsterCompact } from './gridsterCompact';
 interface Props {
     options: GridsterConfig;
 }
@@ -27,9 +29,12 @@ export declare class Gridster extends React.Component<Props> {
     gridRows: never[];
     windowResize: (() => void) | null;
     dragInProgress: boolean;
+    emptyCell: GridsterEmptyCell;
+    compact: GridsterCompact;
     gridRenderer: GridsterRenderer;
     renderer: Renderer;
     constructor(props: Props);
+    componentDidUpdate(): void;
     componentDidMount(): void;
     static checkCollisionTwoItems(item: GridsterItem, item2: GridsterItem): boolean;
     findItemWithItem(item: GridsterItem): GridsterItemComponentInterface | boolean;
@@ -52,6 +57,9 @@ export declare class Gridster extends React.Component<Props> {
     optionsChanged(): void;
     calculateLayout(): void;
     updateGrid(): void;
+    checkIfToResize(): boolean;
+    onResize(): void;
+    resize(): void;
     render(): JSX.Element;
 }
 export {};

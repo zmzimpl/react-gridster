@@ -6,6 +6,10 @@ import { GridsterRenderer } from './gridsterRenderer';
 import { GridsterItem } from './gridsterItem.interface';
 import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
 import { Renderer } from './utils/renderer';
+import { GridsterConfigService } from './gridsterConfig.constant';
+import { GridsterEmptyCell } from './gridsterEmptyCell';
+import { GridsterCompact } from './gridsterCompact';
+import { GridsterUtils } from './gridsterUtils.service';
 
 
 interface Props {
@@ -31,24 +35,41 @@ export class Gridster extends React.Component<Props> {
   gridRows = [];
   windowResize: (() => void) | null;
   dragInProgress: boolean;
-  // emptyCell: GridsterEmptyCell;
-  // compact: GridsterCompact;
+  emptyCell: GridsterEmptyCell;
+  compact: GridsterCompact;
   gridRenderer: GridsterRenderer = new GridsterRenderer(this);
 
   renderer: Renderer = new Renderer();
 
   constructor(props: Props) {
     super(props);
+    this.$options = JSON.parse(JSON.stringify(GridsterConfigService));
+    this.calculateLayoutDebounce = GridsterUtils.debounce(this.calculateLayout.bind(this), 0);
+    this.mobile = false;
     this.curWidth = 0;
     this.curHeight = 0;
+    this.grid = [];
     this.curColWidth = 0;
     this.curRowHeight = 0;
+    this.dragInProgress = false;
+    this.emptyCell = new GridsterEmptyCell(this);
+    this.compact = new GridsterCompact(this);
+    this.gridRenderer = new GridsterRenderer(this);
+  }
+
+  componentDidUpdate() {
+    this.columns = this.$options.minCols;
+    this.rows = this.$options.minRows;
+    this.setGridSize();
+    this.calculateLayout();
   }
 
   componentDidMount() {
+    this.el = document.getElementById('gridster-board') as HTMLDivElement;
     this.setGridSize();
     this.calculateLayout();
     this.updateGrid();
+    this.forceUpdate();
   }
 
   static checkCollisionTwoItems(item: GridsterItem, item2: GridsterItem): boolean {
@@ -155,12 +176,19 @@ export class Gridster extends React.Component<Props> {
   }
 
   setOptions(): void {
-
+    this.$options = GridsterUtils.merge(this.$options, this.options, this.$options);
+    if (!this.$options.disableWindowResize && !this.windowResize) {
+      // TODO 这里需要完善事件监听
+      this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
+    } else if (this.$options.disableWindowResize && this.windowResize) {
+      this.windowResize();
+      this.windowResize = null;
+    }
+    this.emptyCell.updateOptions();
   }
 
   optionsChanged(): void {
     this.setOptions();
-
   }
 
   calculateLayout() {
@@ -171,30 +199,80 @@ export class Gridster extends React.Component<Props> {
   }
 
   updateGrid(): void {
+    if (this.$options.displayGrid === 'always' && !this.mobile) {
+      this.renderer.addClass(this.el, 'display-grid');
+    } else if (this.$options.displayGrid === 'onDrag&Resize' && this.dragInProgress) {
+      this.renderer.addClass(this.el, 'display-grid');
+    } else if (this.$options.displayGrid === 'none' || !this.dragInProgress || this.mobile) {
+      this.renderer.removeClass(this.el, 'display-grid');
+    }
+    this.setGridDimensions();
+    this.gridColumns.length = Math.max(this.columns, Math.floor(this.curWidth / this.curColWidth)) || 0;
+    this.gridRows.length = Math.max(this.rows, Math.floor(this.curHeight / this.curRowHeight)) || 0;
+  }
 
+  checkIfToResize(): boolean {
+    const clientWidth = this.el.clientWidth;
+    const offsetWidth = this.el.offsetWidth;
+    const scrollWidth = this.el.scrollWidth;
+    const clientHeight = this.el.clientHeight;
+    const offsetHeight = this.el.offsetHeight;
+    const scrollHeight = this.el.scrollHeight;
+    const verticalScrollPresent = clientWidth < offsetWidth && scrollHeight > offsetHeight
+      && scrollHeight - offsetHeight < offsetWidth - clientWidth;
+    const horizontalScrollPresent = clientHeight < offsetHeight
+      && scrollWidth > offsetWidth && scrollWidth - offsetWidth < offsetHeight - clientHeight;
+    if (verticalScrollPresent) {
+      return false;
+    }
+    return !horizontalScrollPresent;
+  }
+
+  onResize(): void {
+    this.setGridSize();
+    this.calculateLayout();
+  }
+
+  resize(): void {
+    let height;
+    let width;
+    if (this.$options.gridType === 'fit' && !this.mobile) {
+      width = this.el.offsetWidth;
+      height = this.el.offsetHeight;
+    } else {
+      width = this.el.clientWidth;
+      height = this.el.clientHeight;
+    }
+    if ((width !== this.curWidth || height !== this.curHeight) && this.checkIfToResize()) {
+      this.onResize();
+    }
   }
 
   render() {
+
     const gridsterColumns = [];
-    for(let i = 0; i < this.columns; i++) {
-      const style = this.gridRenderer.getGridColumnStyle(i);
-      gridsterColumns.push(
-        <div key={'grid-col-' + i} className={styles.gridsterColumn} style={style}></div>
-      )
-    }
     const gridsterRows = [];
-    for(let i = 0; i < this.rows; i++) {
-      const style = this.gridRenderer.getGridRowStyle(i);
-      gridsterRows.push(
-        <div key={'grid-row-' + i} className={styles.gridsterRow} style={style}></div>
-      )
+    if (this.el) {
+      for(let i = 0; i < this.columns; i++) {
+        const style = this.gridRenderer.getGridColumnStyle(i);
+        gridsterColumns.push(
+          <div key={'grid-col-' + i} className={styles.gridsterColumn} style={style}></div>
+        )
+      }
+      for(let i = 0; i < this.rows; i++) {
+        const style = this.gridRenderer.getGridRowStyle(i);
+        console.log(style);
+        gridsterRows.push(
+          <div key={'grid-row-' + i} className={styles.gridsterRow} style={style}></div>
+        )
+      }
     }
     console.log(gridsterColumns);
     console.log(gridsterRows);
     return (
       <div className={styles.gridster + ' ' + styles.displayGrid} id="gridster-board">
-        { gridsterColumns }
-        { gridsterRows }
+        { ...gridsterColumns }
+        { ...gridsterRows }
       </div>
     )
   }

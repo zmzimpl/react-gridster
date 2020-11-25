@@ -6,7 +6,15 @@ import { GridsterConfig } from '../../dist/gridsterConfig.interface'
 
 const App = () => {
   const options: GridsterConfig = {
-    gridType: 'fit'
+    gridType: 'fit',
+    displayGrid: 'always',
+    enableEmptyCellClick: false,
+    enableEmptyCellContextMenu: false,
+    enableEmptyCellDrop: false,
+    enableEmptyCellDrag: false,
+    enableOccupiedCellDrop: false,
+    emptyCellDragMaxCols: 50,
+    emptyCellDragMaxRows: 50,
   }
   return <Gridster options={options} />
 }
