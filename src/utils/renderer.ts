@@ -74,6 +74,7 @@ export class Renderer {
 
   
   listen(target: 'window'|'document'|'body'|any, event: string, callback: (event: any) => boolean): () => void {
+
     console.log(target);
     console.log(event);
     console.log(callback);
@@ -82,6 +83,8 @@ export class Renderer {
     }
     return fn;
   }
+
+  
 
 }
 
