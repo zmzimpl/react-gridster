@@ -1,3 +1,4 @@
+import { EventManager } from "./event-manager";
 /**
  * Flags for renderer-specific style modifiers.
  * @publicApi
@@ -16,10 +17,11 @@ export declare const NAMESPACE_URIS: {
     [ns: string]: string;
 };
 export declare class Renderer {
+    eventManager: EventManager;
     setAttribute(el: any, name: string, value: string, namespace?: string): void;
     removeAttribute(el: any, name: string, namespace?: string): void;
     addClass(el: any, name: string): void;
     removeClass(el: any, name: string): void;
     setStyle(el: any, style: string, value: any, flags?: RendererStyleFlags2): void;
-    listen(target: 'window' | 'document' | 'body' | any, event: string, callback: (event: any) => boolean): () => void;
+    listen<K extends keyof HTMLElementEventMap>(target: 'window' | 'document' | 'body' | any, event: K, callback: (event: any) => boolean): () => void;
 }

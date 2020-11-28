@@ -1,3 +1,5 @@
+import { EventManager } from "./event-manager";
+
 /**
  * Flags for renderer-specific style modifiers.
  * @publicApi
@@ -25,6 +27,9 @@ export const NAMESPACE_URIS: { [ns: string]: string } = {
 }
 
 export class Renderer {
+
+  eventManager: EventManager = new EventManager();
+
   setAttribute(el: any, name: string, value: string, namespace?: string): void {
     if (namespace) {
       // TODO(FW-811): Ivy may cause issues here because it's passing around
@@ -73,19 +78,44 @@ export class Renderer {
   }
 
   
-  listen(target: 'window'|'document'|'body'|any, event: string, callback: (event: any) => boolean): () => void {
-
-    console.log(target);
-    console.log(event);
-    console.log(callback);
-    const fn = () => {
-
+  listen<K extends keyof HTMLElementEventMap>(target: 'window'|'document'|'body'| any, event: K, callback: (event: any) => boolean):
+  () => void {
+    if (typeof target === 'string') { 
+      return <() => void>this.eventManager.addGlobalEventListener(
+        target, event, decoratePreventDefault(callback));
+    } else {
+      return <() => void>this.eventManager.addEventListener(
+        target, event, decoratePreventDefault(callback)) as () => void;
     }
-    return fn;
   }
 
   
 
+}
+
+function decoratePreventDefault(eventHandler: Function): Function {
+  // `DebugNode.triggerEventHandler` needs to know if the listener was created with
+  // decoratePreventDefault or is a listener added outside the Angular context so it can handle the
+  // two differently. In the first case, the special '__ngUnwrap__' token is passed to the unwrap
+  // the listener (see below).
+  return (event: any) => {
+    // Ivy uses '__ngUnwrap__' as a special token that allows us to unwrap the function
+    // so that it can be invoked programmatically by `DebugNode.triggerEventHandler`. The debug_node
+    // can inspect the listener toString contents for the existence of this special token. Because
+    // the token is a string literal, it is ensured to not be modified by compiled code.
+    if (event === '__ngUnwrap__') {
+      return eventHandler;
+    }
+
+    const allowDefaultBehavior = eventHandler(event);
+    if (allowDefaultBehavior === false) {
+      // TODO(tbosch): move preventDefault into event plugins...
+      event.preventDefault();
+      event.returnValue = false;
+    }
+
+    return undefined;
+  };
 }
 
 function _readStyleAttribute(element: any): { [name: string]: string } {

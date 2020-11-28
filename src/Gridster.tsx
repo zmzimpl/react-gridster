@@ -57,9 +57,11 @@ export class Gridster extends React.Component<Props> {
     this.gridRenderer = new GridsterRenderer(this);
   }
 
+
   componentDidUpdate() {
     this.columns = this.$options.minCols;
     this.rows = this.$options.minRows;
+    this.setOptions();
     this.setGridSize();
     this.calculateLayout();
   }

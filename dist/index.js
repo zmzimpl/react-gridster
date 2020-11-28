@@ -323,6 +323,51 @@ var GridsterRenderer = /*#__PURE__*/function () {
   return GridsterRenderer;
 }();
 
+var EventManager = /*#__PURE__*/function () {
+  function EventManager() {
+    this._plugins = [];
+    this._eventNameToPlugin = new Map();
+  }
+
+  var _proto = EventManager.prototype;
+
+  _proto.addEventListener = function addEventListener(element, eventName, handler) {
+    var plugin = this._findPluginFor(eventName);
+
+    return plugin.addEventListener(element, eventName, handler);
+  };
+
+  _proto.addGlobalEventListener = function addGlobalEventListener(target, eventName, handler) {
+    var plugin = this._findPluginFor(eventName);
+
+    return plugin.addGlobalEventListener(target, eventName, handler);
+  };
+
+  _proto._findPluginFor = function _findPluginFor(eventName) {
+    var plugin = this._eventNameToPlugin.get(eventName);
+
+    if (plugin) {
+      return plugin;
+    }
+
+    var plugins = this._plugins;
+
+    for (var i = 0; i < plugins.length; i++) {
+      var _plugin = plugins[i];
+
+      if (_plugin.supports(eventName)) {
+        this._eventNameToPlugin.set(eventName, _plugin);
+
+        return _plugin;
+      }
+    }
+
+    throw new Error("No event manager plugin found for event " + eventName);
+  };
+
+  return EventManager;
+}();
+
 var RendererStyleFlags2;
 
 (function (RendererStyleFlags2) {
@@ -338,7 +383,9 @@ var NAMESPACE_URIS = {
   xmlns: 'http://www.w3.org/2000/xmlns/'
 };
 var Renderer = /*#__PURE__*/function () {
-  function Renderer() {}
+  function Renderer() {
+    this.eventManager = new EventManager();
+  }
 
   var _proto = Renderer.prototype;
 
@@ -381,17 +428,32 @@ var Renderer = /*#__PURE__*/function () {
   };
 
   _proto.listen = function listen(target, event, callback) {
-    console.log(target);
-    console.log(event);
-    console.log(callback);
-
-    var fn = function fn() {};
-
-    return fn;
+    if (typeof target === 'string') {
+      return this.eventManager.addGlobalEventListener(target, event, decoratePreventDefault(callback));
+    } else {
+      return this.eventManager.addEventListener(target, event, decoratePreventDefault(callback));
+    }
   };
 
   return Renderer;
 }();
+
+function decoratePreventDefault(eventHandler) {
+  return function (event) {
+    if (event === '__ngUnwrap__') {
+      return eventHandler;
+    }
+
+    var allowDefaultBehavior = eventHandler(event);
+
+    if (allowDefaultBehavior === false) {
+      event.preventDefault();
+      event.returnValue = false;
+    }
+
+    return undefined;
+  };
+}
 
 function _readStyleAttribute(element) {
   var styleMap = {};
@@ -1284,6 +1346,7 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   _proto.componentDidUpdate = function componentDidUpdate() {
     this.columns = this.$options.minCols;
     this.rows = this.$options.minRows;
+    this.setOptions();
     this.setGridSize();
     this.calculateLayout();
   };

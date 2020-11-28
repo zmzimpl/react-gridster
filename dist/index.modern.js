@@ -288,6 +288,48 @@ class GridsterRenderer {
 
 }
 
+class EventManager {
+  constructor() {
+    this._plugins = [];
+    this._eventNameToPlugin = new Map();
+  }
+
+  addEventListener(element, eventName, handler) {
+    const plugin = this._findPluginFor(eventName);
+
+    return plugin.addEventListener(element, eventName, handler);
+  }
+
+  addGlobalEventListener(target, eventName, handler) {
+    const plugin = this._findPluginFor(eventName);
+
+    return plugin.addGlobalEventListener(target, eventName, handler);
+  }
+
+  _findPluginFor(eventName) {
+    const plugin = this._eventNameToPlugin.get(eventName);
+
+    if (plugin) {
+      return plugin;
+    }
+
+    const plugins = this._plugins;
+
+    for (let i = 0; i < plugins.length; i++) {
+      const _plugin = plugins[i];
+
+      if (_plugin.supports(eventName)) {
+        this._eventNameToPlugin.set(eventName, _plugin);
+
+        return _plugin;
+      }
+    }
+
+    throw new Error(`No event manager plugin found for event ${eventName}`);
+  }
+
+}
+
 var RendererStyleFlags2;
 
 (function (RendererStyleFlags2) {
@@ -303,6 +345,10 @@ const NAMESPACE_URIS = {
   xmlns: 'http://www.w3.org/2000/xmlns/'
 };
 class Renderer {
+  constructor() {
+    this.eventManager = new EventManager();
+  }
+
   setAttribute(el, name, value, namespace) {
     if (namespace) {
       el.setAttributeNS(NAMESPACE_URIS[namespace], namespace + ':' + name, value);
@@ -342,15 +388,30 @@ class Renderer {
   }
 
   listen(target, event, callback) {
-    console.log(target);
-    console.log(event);
-    console.log(callback);
-
-    const fn = () => {};
-
-    return fn;
+    if (typeof target === 'string') {
+      return this.eventManager.addGlobalEventListener(target, event, decoratePreventDefault(callback));
+    } else {
+      return this.eventManager.addEventListener(target, event, decoratePreventDefault(callback));
+    }
   }
 
+}
+
+function decoratePreventDefault(eventHandler) {
+  return event => {
+    if (event === '__ngUnwrap__') {
+      return eventHandler;
+    }
+
+    const allowDefaultBehavior = eventHandler(event);
+
+    if (allowDefaultBehavior === false) {
+      event.preventDefault();
+      event.returnValue = false;
+    }
+
+    return undefined;
+  };
 }
 
 function _readStyleAttribute(element) {
@@ -1219,6 +1280,7 @@ class Gridster extends Component {
   componentDidUpdate() {
     this.columns = this.$options.minCols;
     this.rows = this.$options.minRows;
+    this.setOptions();
     this.setGridSize();
     this.calculateLayout();
   }
