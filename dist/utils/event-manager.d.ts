@@ -1,6 +1,4 @@
 export declare class EventManager {
-    private _plugins;
-    private _eventNameToPlugin;
     /**
      * Initializes an instance of the event-manager service.
      */
@@ -13,7 +11,7 @@ export declare class EventManager {
      * @param handler A function to call when the notification occurs. Receives the
      * event object as an argument.
      */
-    addEventListener<K extends keyof HTMLElementEventMap>(element: HTMLElement, eventName: K, handler: Function): Function;
+    addEventListener<K extends keyof HTMLElementEventMap>(element: HTMLElement, eventName: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any): Function;
     /**
      * Registers a global handler for an event in a target view.
      *
@@ -23,14 +21,4 @@ export declare class EventManager {
      * event object as an argument.
      */
     addGlobalEventListener<K extends keyof HTMLElementEventMap>(target: 'window' | 'document' | 'body' | any, eventName: K, handler: Function): Function;
-    /** @internal */
-    _findPluginFor(eventName: string): EventManagerPlugin;
-}
-export declare abstract class EventManagerPlugin {
-    private _doc;
-    constructor(_doc: any);
-    manager: EventManager;
-    abstract supports(eventName: string): boolean;
-    abstract addEventListener(element: HTMLElement, eventName: string, handler: Function): Function;
-    addGlobalEventListener(element: string, eventName: string, handler: Function): Function;
 }

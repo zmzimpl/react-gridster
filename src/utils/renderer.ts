@@ -82,10 +82,10 @@ export class Renderer {
   () => void {
     if (typeof target === 'string') { 
       return <() => void>this.eventManager.addGlobalEventListener(
-        target, event, decoratePreventDefault(callback));
+        target, event, callback);
     } else {
       return <() => void>this.eventManager.addEventListener(
-        target, event, decoratePreventDefault(callback)) as () => void;
+        target, event, callback) as () => void;
     }
   }
 
@@ -93,22 +93,6 @@ export class Renderer {
 
 }
 
-function decoratePreventDefault(eventHandler: Function): Function {
-  return (event: any) => {
-    if (event === '__ngUnwrap__') {
-      return eventHandler;
-    }
-
-    const allowDefaultBehavior = eventHandler(event);
-    if (allowDefaultBehavior === false) {
-      // TODO(tbosch): move preventDefault into event plugins...
-      event.preventDefault();
-      event.returnValue = false;
-    }
-
-    return undefined;
-  };
-}
 
 function _readStyleAttribute(element: any): { [name: string]: string } {
   const styleMap: { [name: string]: string } = {}

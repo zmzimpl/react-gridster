@@ -1,7 +1,5 @@
 export class EventManager {
 
-    private _plugins: EventManagerPlugin[] = [];
-    private _eventNameToPlugin = new Map<string, EventManagerPlugin>();
   
     /**
      * Initializes an instance of the event-manager service.
@@ -17,9 +15,10 @@ export class EventManager {
      * @param handler A function to call when the notification occurs. Receives the
      * event object as an argument.
      */
-    addEventListener<K extends keyof HTMLElementEventMap>(element: HTMLElement, eventName: K, handler: Function): Function {
-      const plugin = this._findPluginFor(eventName);
-      return plugin.addEventListener(element, eventName, handler);
+    addEventListener<K extends keyof HTMLElementEventMap>(element: HTMLElement, eventName: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any): Function {
+      return function () {
+        element.addEventListener(eventName, listener);
+      };
     }
   
     /**
@@ -31,34 +30,12 @@ export class EventManager {
      * event object as an argument.
      */
     addGlobalEventListener<K extends keyof HTMLElementEventMap>(target: 'window'|'document'|'body' | any, eventName: K, handler: Function): Function {
-      const plugin = this._findPluginFor(eventName);
-      return plugin.addGlobalEventListener(target, eventName, handler);
-    }
-  
-    /** @internal */
-    _findPluginFor(eventName: string): EventManagerPlugin {
-      const plugin = this._eventNameToPlugin.get(eventName);
-      if (plugin) {
-        return plugin;
+      const t = getGlobalEventTarget(document, target);
+      return () => {
+        t.addEventListener(eventName, handler);
       }
-  
-      const plugins = this._plugins;
-      for (let i = 0; i < plugins.length; i++) {
-        const plugin = plugins[i];
-        if (plugin.supports(eventName)) {
-          this._eventNameToPlugin.set(eventName, plugin);
-          return plugin;
-        }
-      }
-      throw new Error(`No event manager plugin found for event ${eventName}`);
     }
   }
-
-  // function bindEvent<K extends keyof HTMLElementEventMap>(el: HTMLElement, eventName: K, callback: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any) {
-  //   if (el.addEventListener) {
-  //     el.addEventListener(eventName, callback, false);
-  //   }
-  // }
 
   function getGlobalEventTarget(doc: Document, target: string): any {
     if (target === 'window') {
@@ -90,23 +67,4 @@ export class EventManager {
 
 //   return { e: event };
 // }
-
-export abstract class EventManagerPlugin {
-  constructor(private _doc: any) {}
-
-  // TODO(issue/24571): remove '!'.
-  manager!: EventManager;
-
-  abstract supports(eventName: string): boolean;
-
-  abstract addEventListener(element: HTMLElement, eventName: string, handler: Function): Function;
-
-  addGlobalEventListener(element: string, eventName: string, handler: Function): Function {
-    const target: HTMLElement = getGlobalEventTarget(this._doc, element);
-    if (!target) {
-      throw new Error(`Unsupported event target ${target} for event ${eventName}`);
-    }
-    return this.addEventListener(target, eventName, handler);
-  }
-}
 

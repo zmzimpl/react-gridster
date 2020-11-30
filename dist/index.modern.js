@@ -289,45 +289,37 @@ class GridsterRenderer {
 }
 
 class EventManager {
-  constructor() {
-    this._plugins = [];
-    this._eventNameToPlugin = new Map();
-  }
+  constructor() {}
 
-  addEventListener(element, eventName, handler) {
-    const plugin = this._findPluginFor(eventName);
-
-    return plugin.addEventListener(element, eventName, handler);
+  addEventListener(element, eventName, listener) {
+    return function () {
+      element.addEventListener(eventName, listener);
+    };
   }
 
   addGlobalEventListener(target, eventName, handler) {
-    const plugin = this._findPluginFor(eventName);
-
-    return plugin.addGlobalEventListener(target, eventName, handler);
+    const t = getGlobalEventTarget(document, target);
+    return () => {
+      t.addEventListener(eventName, handler);
+    };
   }
 
-  _findPluginFor(eventName) {
-    const plugin = this._eventNameToPlugin.get(eventName);
+}
 
-    if (plugin) {
-      return plugin;
-    }
-
-    const plugins = this._plugins;
-
-    for (let i = 0; i < plugins.length; i++) {
-      const _plugin = plugins[i];
-
-      if (_plugin.supports(eventName)) {
-        this._eventNameToPlugin.set(eventName, _plugin);
-
-        return _plugin;
-      }
-    }
-
-    throw new Error(`No event manager plugin found for event ${eventName}`);
+function getGlobalEventTarget(doc, target) {
+  if (target === 'window') {
+    return window;
   }
 
+  if (target === 'document') {
+    return doc;
+  }
+
+  if (target === 'body') {
+    return doc.body;
+  }
+
+  return null;
 }
 
 var RendererStyleFlags2;
@@ -389,29 +381,12 @@ class Renderer {
 
   listen(target, event, callback) {
     if (typeof target === 'string') {
-      return this.eventManager.addGlobalEventListener(target, event, decoratePreventDefault(callback));
+      return this.eventManager.addGlobalEventListener(target, event, callback);
     } else {
-      return this.eventManager.addEventListener(target, event, decoratePreventDefault(callback));
+      return this.eventManager.addEventListener(target, event, callback);
     }
   }
 
-}
-
-function decoratePreventDefault(eventHandler) {
-  return event => {
-    if (event === '__ngUnwrap__') {
-      return eventHandler;
-    }
-
-    const allowDefaultBehavior = eventHandler(event);
-
-    if (allowDefaultBehavior === false) {
-      event.preventDefault();
-      event.returnValue = false;
-    }
-
-    return undefined;
-  };
 }
 
 function _readStyleAttribute(element) {
@@ -1287,6 +1262,7 @@ class Gridster extends Component {
 
   componentDidMount() {
     this.el = document.getElementById('gridster-board');
+    this.setOptions();
     this.setGridSize();
     this.calculateLayout();
     this.updateGrid();

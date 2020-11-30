@@ -324,49 +324,41 @@ var GridsterRenderer = /*#__PURE__*/function () {
 }();
 
 var EventManager = /*#__PURE__*/function () {
-  function EventManager() {
-    this._plugins = [];
-    this._eventNameToPlugin = new Map();
-  }
+  function EventManager() {}
 
   var _proto = EventManager.prototype;
 
-  _proto.addEventListener = function addEventListener(element, eventName, handler) {
-    var plugin = this._findPluginFor(eventName);
-
-    return plugin.addEventListener(element, eventName, handler);
+  _proto.addEventListener = function addEventListener(element, eventName, listener) {
+    return function () {
+      element.addEventListener(eventName, listener);
+    };
   };
 
   _proto.addGlobalEventListener = function addGlobalEventListener(target, eventName, handler) {
-    var plugin = this._findPluginFor(eventName);
-
-    return plugin.addGlobalEventListener(target, eventName, handler);
-  };
-
-  _proto._findPluginFor = function _findPluginFor(eventName) {
-    var plugin = this._eventNameToPlugin.get(eventName);
-
-    if (plugin) {
-      return plugin;
-    }
-
-    var plugins = this._plugins;
-
-    for (var i = 0; i < plugins.length; i++) {
-      var _plugin = plugins[i];
-
-      if (_plugin.supports(eventName)) {
-        this._eventNameToPlugin.set(eventName, _plugin);
-
-        return _plugin;
-      }
-    }
-
-    throw new Error("No event manager plugin found for event " + eventName);
+    var t = getGlobalEventTarget(document, target);
+    return function () {
+      t.addEventListener(eventName, handler);
+    };
   };
 
   return EventManager;
 }();
+
+function getGlobalEventTarget(doc, target) {
+  if (target === 'window') {
+    return window;
+  }
+
+  if (target === 'document') {
+    return doc;
+  }
+
+  if (target === 'body') {
+    return doc.body;
+  }
+
+  return null;
+}
 
 var RendererStyleFlags2;
 
@@ -429,31 +421,14 @@ var Renderer = /*#__PURE__*/function () {
 
   _proto.listen = function listen(target, event, callback) {
     if (typeof target === 'string') {
-      return this.eventManager.addGlobalEventListener(target, event, decoratePreventDefault(callback));
+      return this.eventManager.addGlobalEventListener(target, event, callback);
     } else {
-      return this.eventManager.addEventListener(target, event, decoratePreventDefault(callback));
+      return this.eventManager.addEventListener(target, event, callback);
     }
   };
 
   return Renderer;
 }();
-
-function decoratePreventDefault(eventHandler) {
-  return function (event) {
-    if (event === '__ngUnwrap__') {
-      return eventHandler;
-    }
-
-    var allowDefaultBehavior = eventHandler(event);
-
-    if (allowDefaultBehavior === false) {
-      event.preventDefault();
-      event.returnValue = false;
-    }
-
-    return undefined;
-  };
-}
 
 function _readStyleAttribute(element) {
   var styleMap = {};
@@ -1353,6 +1328,7 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
 
   _proto.componentDidMount = function componentDidMount() {
     this.el = document.getElementById('gridster-board');
+    this.setOptions();
     this.setGridSize();
     this.calculateLayout();
     this.updateGrid();

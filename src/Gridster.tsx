@@ -68,6 +68,7 @@ export class Gridster extends React.Component<Props> {
 
   componentDidMount() {
     this.el = document.getElementById('gridster-board') as HTMLDivElement;
+    this.setOptions();
     this.setGridSize();
     this.calculateLayout();
     this.updateGrid();
