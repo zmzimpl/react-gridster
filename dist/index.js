@@ -1447,6 +1447,7 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
 
     if (!this.$options.disableWindowResize && !this.windowResize) {
       this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
+      this.windowResize();
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;
@@ -1457,6 +1458,7 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
 
   _proto.optionsChanged = function optionsChanged() {
     this.setOptions();
+    this.forceUpdate();
   };
 
   _proto.calculateLayout = function calculateLayout() {

@@ -1381,6 +1381,7 @@ class Gridster extends Component {
 
     if (!this.$options.disableWindowResize && !this.windowResize) {
       this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
+      this.windowResize();
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;
@@ -1391,6 +1392,7 @@ class Gridster extends Component {
 
   optionsChanged() {
     this.setOptions();
+    this.forceUpdate();
   }
 
   calculateLayout() {
