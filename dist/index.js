@@ -1443,11 +1443,14 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.setOptions = function setOptions() {
+    var _this2 = this;
+
     this.$options = GridsterUtils.merge(this.$options, this.options, this.$options);
 
     if (!this.$options.disableWindowResize && !this.windowResize) {
-      this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
-      this.windowResize();
+      this.windowResize = function () {
+        return window.addEventListener('resize', _this2.onResize.bind(_this2));
+      };
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;

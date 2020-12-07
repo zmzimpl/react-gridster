@@ -1380,8 +1380,7 @@ class Gridster extends Component {
     this.$options = GridsterUtils.merge(this.$options, this.options, this.$options);
 
     if (!this.$options.disableWindowResize && !this.windowResize) {
-      this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
-      this.windowResize();
+      this.windowResize = () => window.addEventListener('resize', this.onResize.bind(this));
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;
