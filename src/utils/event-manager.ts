@@ -15,9 +15,10 @@ export class EventManager {
      * @param handler A function to call when the notification occurs. Receives the
      * event object as an argument.
      */
-    addEventListener<K extends keyof HTMLElementEventMap>(element: HTMLElement, eventName: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any): Function {
+    addEventListener<K extends keyof HTMLElementEventMap>(element: HTMLElement, eventName: K, handler: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any): Function {
+      element.addEventListener(eventName, handler);
       return function () {
-        element.addEventListener(eventName, listener);
+        element.removeEventListener(eventName, handler);
       };
     }
   
@@ -31,8 +32,9 @@ export class EventManager {
      */
     addGlobalEventListener<K extends keyof HTMLElementEventMap>(target: 'window'|'document'|'body' | any, eventName: K, handler: Function): Function {
       const t = getGlobalEventTarget(document, target);
+      t.addEventListener(eventName, handler);
       return () => {
-        t.addEventListener(eventName, handler);
+        t.removeEventListener(eventName, handler);
       }
     }
   }

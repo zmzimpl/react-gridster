@@ -11,7 +11,7 @@ export declare class EventManager {
      * @param handler A function to call when the notification occurs. Receives the
      * event object as an argument.
      */
-    addEventListener<K extends keyof HTMLElementEventMap>(element: HTMLElement, eventName: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any): Function;
+    addEventListener<K extends keyof HTMLElementEventMap>(element: HTMLElement, eventName: K, handler: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any): Function;
     /**
      * Registers a global handler for an event in a target view.
      *

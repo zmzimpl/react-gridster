@@ -328,16 +328,18 @@ var EventManager = /*#__PURE__*/function () {
 
   var _proto = EventManager.prototype;
 
-  _proto.addEventListener = function addEventListener(element, eventName, listener) {
+  _proto.addEventListener = function addEventListener(element, eventName, handler) {
+    element.addEventListener(eventName, handler);
     return function () {
-      element.addEventListener(eventName, listener);
+      element.removeEventListener(eventName, handler);
     };
   };
 
   _proto.addGlobalEventListener = function addGlobalEventListener(target, eventName, handler) {
     var t = getGlobalEventTarget(document, target);
+    t.addEventListener(eventName, handler);
     return function () {
-      t.addEventListener(eventName, handler);
+      t.removeEventListener(eventName, handler);
     };
   };
 
@@ -421,14 +423,45 @@ var Renderer = /*#__PURE__*/function () {
 
   _proto.listen = function listen(target, event, callback) {
     if (typeof target === 'string') {
-      return this.eventManager.addGlobalEventListener(target, event, callback);
+      return this.addGlobalEventListener(target, event, callback);
     } else {
-      return this.eventManager.addEventListener(target, event, callback);
+      return this.addEventListener(target, event, callback);
     }
+  };
+
+  _proto.addEventListener = function addEventListener(element, eventName, handler) {
+    element.addEventListener(eventName, handler);
+    return function () {
+      element.removeEventListener(eventName, handler);
+    };
+  };
+
+  _proto.addGlobalEventListener = function addGlobalEventListener(target, eventName, handler) {
+    var t = getGlobalEventTarget$1(document, target);
+    t.addEventListener(eventName, handler);
+    return function () {
+      t.removeEventListener(eventName, handler);
+    };
   };
 
   return Renderer;
 }();
+
+function getGlobalEventTarget$1(doc, target) {
+  if (target === 'window') {
+    return window;
+  }
+
+  if (target === 'document') {
+    return doc;
+  }
+
+  if (target === 'body') {
+    return doc.body;
+  }
+
+  return null;
+}
 
 function _readStyleAttribute(element) {
   var styleMap = {};
@@ -1443,14 +1476,10 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.setOptions = function setOptions() {
-    var _this2 = this;
-
     this.$options = GridsterUtils.merge(this.$options, this.options, this.$options);
 
     if (!this.$options.disableWindowResize && !this.windowResize) {
-      this.windowResize = function () {
-        return window.addEventListener('resize', _this2.onResize.bind(_this2));
-      };
+      this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;
@@ -1461,7 +1490,6 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
 
   _proto.optionsChanged = function optionsChanged() {
     this.setOptions();
-    this.forceUpdate();
   };
 
   _proto.calculateLayout = function calculateLayout() {

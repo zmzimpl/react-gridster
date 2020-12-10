@@ -291,16 +291,18 @@ class GridsterRenderer {
 class EventManager {
   constructor() {}
 
-  addEventListener(element, eventName, listener) {
+  addEventListener(element, eventName, handler) {
+    element.addEventListener(eventName, handler);
     return function () {
-      element.addEventListener(eventName, listener);
+      element.removeEventListener(eventName, handler);
     };
   }
 
   addGlobalEventListener(target, eventName, handler) {
     const t = getGlobalEventTarget(document, target);
+    t.addEventListener(eventName, handler);
     return () => {
-      t.addEventListener(eventName, handler);
+      t.removeEventListener(eventName, handler);
     };
   }
 
@@ -381,12 +383,43 @@ class Renderer {
 
   listen(target, event, callback) {
     if (typeof target === 'string') {
-      return this.eventManager.addGlobalEventListener(target, event, callback);
+      return this.addGlobalEventListener(target, event, callback);
     } else {
-      return this.eventManager.addEventListener(target, event, callback);
+      return this.addEventListener(target, event, callback);
     }
   }
 
+  addEventListener(element, eventName, handler) {
+    element.addEventListener(eventName, handler);
+    return function () {
+      element.removeEventListener(eventName, handler);
+    };
+  }
+
+  addGlobalEventListener(target, eventName, handler) {
+    const t = getGlobalEventTarget$1(document, target);
+    t.addEventListener(eventName, handler);
+    return () => {
+      t.removeEventListener(eventName, handler);
+    };
+  }
+
+}
+
+function getGlobalEventTarget$1(doc, target) {
+  if (target === 'window') {
+    return window;
+  }
+
+  if (target === 'document') {
+    return doc;
+  }
+
+  if (target === 'body') {
+    return doc.body;
+  }
+
+  return null;
 }
 
 function _readStyleAttribute(element) {
@@ -1380,7 +1413,7 @@ class Gridster extends Component {
     this.$options = GridsterUtils.merge(this.$options, this.options, this.$options);
 
     if (!this.$options.disableWindowResize && !this.windowResize) {
-      this.windowResize = () => window.addEventListener('resize', this.onResize.bind(this));
+      this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;
@@ -1391,7 +1424,6 @@ class Gridster extends Component {
 
   optionsChanged() {
     this.setOptions();
-    this.forceUpdate();
   }
 
   calculateLayout() {

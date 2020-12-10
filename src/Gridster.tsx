@@ -181,8 +181,7 @@ export class Gridster extends React.Component<Props> {
   setOptions(): void {
     this.$options = GridsterUtils.merge(this.$options, this.options, this.$options);
     if (!this.$options.disableWindowResize && !this.windowResize) {
-      // TODO 这里需要完善事件监听
-      this.windowResize = () => window.addEventListener('resize', this.onResize.bind(this))
+      this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;
@@ -192,7 +191,6 @@ export class Gridster extends React.Component<Props> {
 
   optionsChanged(): void {
     this.setOptions();
-    this.forceUpdate();
   }
 
   calculateLayout() {
