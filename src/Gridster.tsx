@@ -1,5 +1,4 @@
 import * as React from 'react'
-import styles from './styles.module.css'
 import { GridsterConfig } from './gridsterConfig.interface';
 import { GridsterConfigS } from './gridsterConfigS.interface';
 import { GridsterRenderer } from './gridsterRenderer';
@@ -10,7 +9,8 @@ import { GridsterConfigService } from './gridsterConfig.constant';
 import { GridsterEmptyCell } from './gridsterEmptyCell';
 import { GridsterCompact } from './gridsterCompact';
 import { GridsterUtils } from './gridsterUtils.service';
-
+import debounce from 'lodash/debounce';
+import styles from './styles.module.css'
 
 interface Props {
   options: GridsterConfig;
@@ -41,6 +41,15 @@ export class Gridster extends React.Component<Props> {
 
   renderer: Renderer = new Renderer();
 
+  state = {
+    columns: 12,
+    rows: 12,
+    curWidth: 0,
+    curHeight: 0,
+    curColWidth: 0,
+    curRowHeight: 0,
+  }
+
   constructor(props: Props) {
     super(props);
     this.$options = JSON.parse(JSON.stringify(GridsterConfigService));
@@ -55,6 +64,13 @@ export class Gridster extends React.Component<Props> {
     this.emptyCell = new GridsterEmptyCell(this);
     this.compact = new GridsterCompact(this);
     this.gridRenderer = new GridsterRenderer(this);
+    console.log(props);
+    if (this.props.options) {
+      this.options = this.props.options;
+      this.setOptions();
+      this.columns = this.$options.minCols;
+      this.rows = this.$options.minRows;
+    }
   }
 
 
@@ -62,8 +78,8 @@ export class Gridster extends React.Component<Props> {
     this.columns = this.$options.minCols;
     this.rows = this.$options.minRows;
     this.setOptions();
-    this.setGridSize();
-    this.calculateLayout();
+    // this.setGridSize();
+    // this.calculateLayout();
   }
 
   componentDidMount() {
@@ -167,6 +183,8 @@ export class Gridster extends React.Component<Props> {
     const el: HTMLDivElement = document.getElementById('gridster-board') as HTMLDivElement;
     let width = el.clientWidth;
     let height = el.clientHeight;
+    console.log(width, 'w');
+    console.log(height, 'h');
     if (this.$options?.setGridSize || this.$options?.gridType === 'fit' && !this.mobile) {
       width = el.offsetWidth;
       height = el.offsetHeight;
@@ -176,12 +194,19 @@ export class Gridster extends React.Component<Props> {
     }
     this.curWidth = width;
     this.curHeight = height;
+    console.log(width, 'w');
+    console.log(height, 'h');
+    this.setState({
+      curWidth: this.curWidth,
+      curHeight: this.curHeight
+    });
   }
 
   setOptions(): void {
     this.$options = GridsterUtils.merge(this.$options, this.options, this.$options);
+    console.log(this.options);
     if (!this.$options.disableWindowResize && !this.windowResize) {
-      this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
+      this.windowResize = this.renderer.listen('window', 'resize', debounce(this.onResize.bind(this), 200));
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;
@@ -198,6 +223,10 @@ export class Gridster extends React.Component<Props> {
     this.curColWidth = (this.curWidth - marginWidth) / this.columns;
     let marginHeight = -this.$options?.margin || 0;
     this.curRowHeight = (this.curHeight - marginHeight) / this.rows;
+    this.setState({
+      curColWidth: this.curColWidth,
+      curRowHeight: this.curRowHeight
+    });
   }
 
   updateGrid(): void {
@@ -263,16 +292,13 @@ export class Gridster extends React.Component<Props> {
       }
       for(let i = 0; i < this.rows; i++) {
         const style = this.gridRenderer.getGridRowStyle(i);
-        console.log(style);
         gridsterRows.push(
           <div key={'grid-row-' + i} className={styles.gridsterRow} style={style}></div>
         )
       }
     }
-    console.log(gridsterColumns);
-    console.log(gridsterRows);
     return (
-      <div className={styles.gridster + ' ' + styles.displayGrid} id="gridster-board">
+      <div className={styles.gridster + ' ' + styles.displayGrid + ' ' + styles[this.$options?.gridType]} id="gridster-board">
         { ...gridsterColumns }
         { ...gridsterRows }
       </div>

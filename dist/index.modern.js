@@ -1,6 +1,5 @@
 import { Component, createElement } from 'react';
-
-var styles = {"gridster":"_styles-module__gridster__3FbIf","fit":"_styles-module__fit__2cIYj","scrollVertical":"_styles-module__scrollVertical__2BhiX","scrollHorizontal":"_styles-module__scrollHorizontal__3XPdq","fixed":"_styles-module__fixed__2lylp","mobile":"_styles-module__mobile__2RmiB","gridsterColumn":"_styles-module__gridsterColumn__2PdEo","gridsterRow":"_styles-module__gridsterRow__k3kT0","displayGrid":"_styles-module__displayGrid__3X7y5"};
+import debounce from 'lodash/debounce';
 
 var GridType;
 
@@ -1262,6 +1261,8 @@ class GridsterCompact {
 
 }
 
+var styles = {"gridster":"_styles-module__gridster__3FbIf","fit":"_styles-module__fit__2cIYj","scrollVertical":"_styles-module__scrollVertical__2BhiX","scrollHorizontal":"_styles-module__scrollHorizontal__3XPdq","fixed":"_styles-module__fixed__2lylp","mobile":"_styles-module__mobile__2RmiB","gridsterColumn":"_styles-module__gridsterColumn__2PdEo","gridsterRow":"_styles-module__gridsterRow__k3kT0","displayGrid":"_styles-module__displayGrid__3X7y5"};
+
 class Gridster extends Component {
   constructor(props) {
     super(props);
@@ -1271,6 +1272,14 @@ class Gridster extends Component {
     this.gridRows = [];
     this.gridRenderer = new GridsterRenderer(this);
     this.renderer = new Renderer();
+    this.state = {
+      columns: 12,
+      rows: 12,
+      curWidth: 0,
+      curHeight: 0,
+      curColWidth: 0,
+      curRowHeight: 0
+    };
     this.$options = JSON.parse(JSON.stringify(GridsterConfigService));
     this.calculateLayoutDebounce = GridsterUtils.debounce(this.calculateLayout.bind(this), 0);
     this.mobile = false;
@@ -1283,14 +1292,20 @@ class Gridster extends Component {
     this.emptyCell = new GridsterEmptyCell(this);
     this.compact = new GridsterCompact(this);
     this.gridRenderer = new GridsterRenderer(this);
+    console.log(props);
+
+    if (this.props.options) {
+      this.options = this.props.options;
+      this.setOptions();
+      this.columns = this.$options.minCols;
+      this.rows = this.$options.minRows;
+    }
   }
 
   componentDidUpdate() {
     this.columns = this.$options.minCols;
     this.rows = this.$options.minRows;
     this.setOptions();
-    this.setGridSize();
-    this.calculateLayout();
   }
 
   componentDidMount() {
@@ -1396,6 +1411,8 @@ class Gridster extends Component {
     const el = document.getElementById('gridster-board');
     let width = el.clientWidth;
     let height = el.clientHeight;
+    console.log(width, 'w');
+    console.log(height, 'h');
 
     if (((_this$$options = this.$options) === null || _this$$options === void 0 ? void 0 : _this$$options.setGridSize) || ((_this$$options2 = this.$options) === null || _this$$options2 === void 0 ? void 0 : _this$$options2.gridType) === 'fit' && !this.mobile) {
       width = el.offsetWidth;
@@ -1407,13 +1424,20 @@ class Gridster extends Component {
 
     this.curWidth = width;
     this.curHeight = height;
+    console.log(width, 'w');
+    console.log(height, 'h');
+    this.setState({
+      curWidth: this.curWidth,
+      curHeight: this.curHeight
+    });
   }
 
   setOptions() {
     this.$options = GridsterUtils.merge(this.$options, this.options, this.$options);
+    console.log(this.options);
 
     if (!this.$options.disableWindowResize && !this.windowResize) {
-      this.windowResize = this.renderer.listen('window', 'resize', this.onResize.bind(this));
+      this.windowResize = this.renderer.listen('window', 'resize', debounce(this.onResize.bind(this), 200));
     } else if (this.$options.disableWindowResize && this.windowResize) {
       this.windowResize();
       this.windowResize = null;
@@ -1433,6 +1457,10 @@ class Gridster extends Component {
     this.curColWidth = (this.curWidth - marginWidth) / this.columns;
     let marginHeight = -((_this$$options4 = this.$options) === null || _this$$options4 === void 0 ? void 0 : _this$$options4.margin) || 0;
     this.curRowHeight = (this.curHeight - marginHeight) / this.rows;
+    this.setState({
+      curColWidth: this.curColWidth,
+      curRowHeight: this.curRowHeight
+    });
   }
 
   updateGrid() {
@@ -1489,6 +1517,8 @@ class Gridster extends Component {
   }
 
   render() {
+    var _this$$options5;
+
     const gridsterColumns = [];
     const gridsterRows = [];
 
@@ -1504,7 +1534,6 @@ class Gridster extends Component {
 
       for (let i = 0; i < this.rows; i++) {
         const style = this.gridRenderer.getGridRowStyle(i);
-        console.log(style);
         gridsterRows.push(createElement("div", {
           key: 'grid-row-' + i,
           className: styles.gridsterRow,
@@ -1513,10 +1542,8 @@ class Gridster extends Component {
       }
     }
 
-    console.log(gridsterColumns);
-    console.log(gridsterRows);
     return createElement("div", {
-      className: styles.gridster + ' ' + styles.displayGrid,
+      className: styles.gridster + ' ' + styles.displayGrid + ' ' + styles[(_this$$options5 = this.$options) === null || _this$$options5 === void 0 ? void 0 : _this$$options5.gridType],
       id: "gridster-board"
     }, gridsterColumns, gridsterRows);
   }

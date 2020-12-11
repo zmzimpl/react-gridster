@@ -6,6 +6,10 @@ import { GridsterConfig } from '../../dist/gridsterConfig.interface'
 
 export class App extends React.Component {
   options: GridsterConfig = {
+    minCols: 32,
+    maxCols: 32,
+    minRows: 21,
+    maxRows: 21,
     gridType: 'fit',
     displayGrid: 'always',
     enableEmptyCellClick: false,

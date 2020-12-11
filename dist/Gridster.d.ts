@@ -33,6 +33,14 @@ export declare class Gridster extends React.Component<Props> {
     compact: GridsterCompact;
     gridRenderer: GridsterRenderer;
     renderer: Renderer;
+    state: {
+        columns: number;
+        rows: number;
+        curWidth: number;
+        curHeight: number;
+        curColWidth: number;
+        curRowHeight: number;
+    };
     constructor(props: Props);
     componentDidUpdate(): void;
     componentDidMount(): void;
