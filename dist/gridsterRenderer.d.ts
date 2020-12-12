@@ -1,11 +1,11 @@
 import { GridsterComponentInterface } from './gridster.interface';
-import { GridsterItem } from './gridsterItem.interface';
+import { GridsterItemInterface } from './gridsterItem.interface';
 import { Renderer } from './utils/renderer';
 export declare class GridsterRenderer {
     private gridster;
     constructor(gridster: GridsterComponentInterface);
     destroy(): void;
-    updateItem(el: any, item: GridsterItem, renderer: Renderer): void;
+    updateItem(el: any, item: GridsterItemInterface, renderer: Renderer): void;
     updateGridster(): void;
     getGridColumnStyle(i: number): {
         width: string;

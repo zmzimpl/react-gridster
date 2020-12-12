@@ -2,7 +2,7 @@ import * as React from 'react';
 import { GridsterConfig } from './gridsterConfig.interface';
 import { GridsterConfigS } from './gridsterConfigS.interface';
 import { GridsterRenderer } from './gridsterRenderer';
-import { GridsterItem } from './gridsterItem.interface';
+import { GridsterItemInterface } from './gridsterItem.interface';
 import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
 import { Renderer } from './utils/renderer';
 import { GridsterEmptyCell } from './gridsterEmptyCell';
@@ -12,8 +12,9 @@ interface Props {
 }
 export declare class Gridster extends React.Component<Props> {
     calculateLayoutDebounce: () => void;
-    movingItem: GridsterItem | null;
+    movingItem: GridsterItemInterface | null;
     previewStyle: () => void;
+    elRef: any;
     el: any;
     $options: GridsterConfigS;
     options: GridsterConfig;
@@ -44,12 +45,12 @@ export declare class Gridster extends React.Component<Props> {
     constructor(props: Props);
     componentDidUpdate(): void;
     componentDidMount(): void;
-    static checkCollisionTwoItems(item: GridsterItem, item2: GridsterItem): boolean;
-    findItemWithItem(item: GridsterItem): GridsterItemComponentInterface | boolean;
-    findItemsWithItem(item: GridsterItem): Array<GridsterItemComponentInterface>;
-    checkCollision(item: GridsterItem): GridsterItemComponentInterface | boolean;
-    checkGridCollision(item: GridsterItem): boolean;
-    checkCollisionForSwaping(item: GridsterItem): GridsterItemComponentInterface | boolean;
+    static checkCollisionTwoItems(item: GridsterItemInterface, item2: GridsterItemInterface): boolean;
+    findItemWithItem(item: GridsterItemInterface): GridsterItemComponentInterface | boolean;
+    findItemsWithItem(item: GridsterItemInterface): Array<GridsterItemComponentInterface>;
+    checkCollision(item: GridsterItemInterface): GridsterItemComponentInterface | boolean;
+    checkGridCollision(item: GridsterItemInterface): boolean;
+    checkCollisionForSwaping(item: GridsterItemInterface): GridsterItemComponentInterface | boolean;
     pixelsToPositionX(x: number, roundingMethod: Function, noLimit?: boolean): number;
     pixelsToPositionY(y: number, roundingMethod: Function, noLimit?: boolean): number;
     positionXToPixels(x: number): number;

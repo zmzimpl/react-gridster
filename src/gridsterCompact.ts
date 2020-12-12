@@ -1,6 +1,6 @@
 import {GridsterComponentInterface} from './gridster.interface';
 import {GridsterItemComponentInterface} from './gridsterItemComponent.interface';
-import {GridsterItem} from './gridsterItem.interface';
+import {GridsterItemInterface} from './gridsterItem.interface';
 import {CompactType} from './gridsterConfig.interface';
 
 export class GridsterCompact {
@@ -36,7 +36,7 @@ export class GridsterCompact {
     }
   }
 
-  checkCompactItem(item: GridsterItem): void {
+  checkCompactItem(item: GridsterItemInterface): void {
     if (this.gridster.$options.compactType !== CompactType.None) {
       if (this.gridster.$options.compactType === CompactType.CompactUp) {
         this.moveUpTillCollision(item);
@@ -75,7 +75,7 @@ export class GridsterCompact {
     }
   }
 
-  moveUpTillCollision(item: GridsterItem): boolean {
+  moveUpTillCollision(item: GridsterItemInterface): boolean {
     item.y -= 1;
     if (this.gridster.checkCollision(item)) {
       item.y += 1;
@@ -126,7 +126,7 @@ export class GridsterCompact {
     }
   }
 
-  moveLeftTillCollision(item: GridsterItem): boolean {
+  moveLeftTillCollision(item: GridsterItemInterface): boolean {
     item.x -= 1;
     if (this.gridster.checkCollision(item)) {
       item.x += 1;
@@ -137,7 +137,7 @@ export class GridsterCompact {
     }
   }
 
-  moveRightTillCollision(item: GridsterItem) {
+  moveRightTillCollision(item: GridsterItemInterface) {
     item.x += 1;
     if (this.gridster.checkCollision(item)) {
       item.x -= 1;

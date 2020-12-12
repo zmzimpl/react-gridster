@@ -1,5 +1,5 @@
 import { compactTypes, displayGrids, gridTypes } from './gridsterConfig.interface';
-import { GridsterItem } from './gridsterItem.interface';
+import { GridsterItemInterface } from './gridsterItem.interface';
 import { GridsterComponentInterface } from './gridster.interface';
 export interface GridsterConfigS {
     gridType: gridTypes;
@@ -58,9 +58,9 @@ export interface GridsterConfigS {
     api: {
         resize: () => void;
         optionsChanged: () => void;
-        getNextPossiblePosition: (newItem: GridsterItem) => boolean;
-        getFirstPossiblePosition: (item: GridsterItem) => GridsterItem;
-        getLastPossiblePosition: (item: GridsterItem) => GridsterItem;
+        getNextPossiblePosition: (newItem: GridsterItemInterface) => boolean;
+        getFirstPossiblePosition: (item: GridsterItemInterface) => GridsterItemInterface;
+        getLastPossiblePosition: (item: GridsterItemInterface) => GridsterItemInterface;
     };
     [propName: string]: any;
 }
@@ -74,7 +74,7 @@ export interface Draggable extends DragBase {
     ignoreContent: boolean;
     dragHandleClass: string;
     dropOverItems: boolean;
-    dropOverItemsCallback: (source: GridsterItem, target: GridsterItem, grid?: GridsterComponentInterface) => void;
+    dropOverItemsCallback: (source: GridsterItemInterface, target: GridsterItemInterface, grid?: GridsterComponentInterface) => void;
     dropOverItemStack?: boolean;
     dropOverItemSplit?: boolean;
 }

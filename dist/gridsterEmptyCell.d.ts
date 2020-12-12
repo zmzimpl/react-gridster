@@ -1,9 +1,9 @@
-import { GridsterItem, GridsterItemSplitMode } from './gridsterItem.interface';
+import { GridsterItemInterface, GridsterItemSplitMode } from './gridsterItem.interface';
 import { GridsterComponentInterface } from './gridster.interface';
 import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
 export declare class GridsterEmptyCell {
     private gridster;
-    initialItem: GridsterItem | null;
+    initialItem: GridsterItemInterface | null;
     emptyCellClick: Function | null;
     emptyCellClickTouch: Function | null;
     emptyCellContextMenu: Function | null;
@@ -26,10 +26,10 @@ export declare class GridsterEmptyCell {
     emptyCellMouseDown(e: any): void;
     emptyCellMouseMove(e: any): void;
     emptyCellMouseUp(e: any): void;
-    getValidItemFromEvent(e: any, oldItem?: GridsterItem | null): GridsterItem | undefined;
+    getValidItemFromEvent(e: any, oldItem?: GridsterItemInterface | null): GridsterItemInterface | undefined;
     /** 分裂单元格 */
-    splitItem(item: GridsterItem, overItem: GridsterItemComponentInterface, mode: GridsterItemSplitMode): void;
+    splitItem(item: GridsterItemInterface, overItem: GridsterItemComponentInterface, mode: GridsterItemSplitMode): void;
     /** 找出参照物 */
-    checkdReferenceItem(checkItem: GridsterItem, pos: string): GridsterItemComponentInterface | undefined;
-    fitByReferenceItem(updateItem: GridsterItem, leftReferenceItem: GridsterItemComponentInterface, rightReferenceItem: GridsterItemComponentInterface): boolean;
+    checkdReferenceItem(checkItem: GridsterItemInterface, pos: string): GridsterItemComponentInterface | undefined;
+    fitByReferenceItem(updateItem: GridsterItemInterface, leftReferenceItem: GridsterItemComponentInterface, rightReferenceItem: GridsterItemComponentInterface): boolean;
 }

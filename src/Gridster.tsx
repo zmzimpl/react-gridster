@@ -2,7 +2,7 @@ import * as React from 'react'
 import { GridsterConfig } from './gridsterConfig.interface';
 import { GridsterConfigS } from './gridsterConfigS.interface';
 import { GridsterRenderer } from './gridsterRenderer';
-import { GridsterItem } from './gridsterItem.interface';
+import { GridsterItemInterface } from './gridsterItem.interface';
 import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
 import { Renderer } from './utils/renderer';
 import { GridsterConfigService } from './gridsterConfig.constant';
@@ -18,8 +18,9 @@ interface Props {
 
 export class Gridster extends React.Component<Props> {
   calculateLayoutDebounce: () => void;
-  movingItem: GridsterItem | null;
+  movingItem: GridsterItemInterface | null;
   previewStyle: () => void;
+  elRef: any;
   el: any;
   $options: GridsterConfigS;
   options: GridsterConfig;
@@ -52,6 +53,7 @@ export class Gridster extends React.Component<Props> {
 
   constructor(props: Props) {
     super(props);
+    this.elRef = React.createRef();
     this.$options = JSON.parse(JSON.stringify(GridsterConfigService));
     this.calculateLayoutDebounce = GridsterUtils.debounce(this.calculateLayout.bind(this), 0);
     this.mobile = false;
@@ -64,6 +66,7 @@ export class Gridster extends React.Component<Props> {
     this.emptyCell = new GridsterEmptyCell(this);
     this.compact = new GridsterCompact(this);
     this.gridRenderer = new GridsterRenderer(this);
+   
     console.log(props);
     if (this.props.options) {
       this.options = this.props.options;
@@ -83,7 +86,7 @@ export class Gridster extends React.Component<Props> {
   }
 
   componentDidMount() {
-    this.el = document.getElementById('gridster-board') as HTMLDivElement;
+    this.el = this.elRef.current;
     this.setOptions();
     this.setGridSize();
     this.calculateLayout();
@@ -91,14 +94,14 @@ export class Gridster extends React.Component<Props> {
     this.forceUpdate();
   }
 
-  static checkCollisionTwoItems(item: GridsterItem, item2: GridsterItem): boolean {
+  static checkCollisionTwoItems(item: GridsterItemInterface, item2: GridsterItemInterface): boolean {
     return item.x < item2.x + item2.cols
       && item.x + item.cols > item2.x
       && item.y < item2.y + item2.rows
       && item.y + item.rows > item2.y;
   }
 
-  findItemWithItem(item: GridsterItem): GridsterItemComponentInterface | boolean {
+  findItemWithItem(item: GridsterItemInterface): GridsterItemComponentInterface | boolean {
     let widgetsIndex: number = this.grid.length - 1, widget: GridsterItemComponentInterface;
     for (; widgetsIndex > -1; widgetsIndex--) {
       widget = this.grid[widgetsIndex];
@@ -109,7 +112,7 @@ export class Gridster extends React.Component<Props> {
     return false;
   }
 
-  findItemsWithItem(item: GridsterItem): Array<GridsterItemComponentInterface> {
+  findItemsWithItem(item: GridsterItemInterface): Array<GridsterItemComponentInterface> {
     const a: Array<GridsterItemComponentInterface> = [];
     let widgetsIndex: number = this.grid.length - 1, widget: GridsterItemComponentInterface;
     for (; widgetsIndex > -1; widgetsIndex--) {
@@ -121,17 +124,17 @@ export class Gridster extends React.Component<Props> {
     return a;
   }
 
-  checkCollision(item: GridsterItem): GridsterItemComponentInterface | boolean { 
+  checkCollision(item: GridsterItemInterface): GridsterItemComponentInterface | boolean { 
     console.log(item);
     return false;
   }
 
-  checkGridCollision(item: GridsterItem): boolean { 
+  checkGridCollision(item: GridsterItemInterface): boolean { 
     console.log(item);
     return false;
   }
   // identical to checkCollision() except that this function calls findItemWithItemForSwaping() instead of findItemWithItem()
-  checkCollisionForSwaping(item: GridsterItem): GridsterItemComponentInterface | boolean { 
+  checkCollisionForSwaping(item: GridsterItemInterface): GridsterItemComponentInterface | boolean { 
     console.log(item);
     return false;
   }
@@ -180,7 +183,7 @@ export class Gridster extends React.Component<Props> {
    * 设置画布整体大小
    */
   setGridSize(): void {
-    const el: HTMLDivElement = document.getElementById('gridster-board') as HTMLDivElement;
+    const el = this.el;
     let width = el.clientWidth;
     let height = el.clientHeight;
     console.log(width, 'w');
@@ -298,9 +301,10 @@ export class Gridster extends React.Component<Props> {
       }
     }
     return (
-      <div className={styles.gridster + ' ' + styles.displayGrid + ' ' + styles[this.$options?.gridType]} id="gridster-board">
+      <div ref={this.elRef} className={styles.gridster + ' ' + styles.displayGrid + ' ' + styles[this.$options?.gridType]} id="gridster-board">
         { ...gridsterColumns }
         { ...gridsterRows }
+        { this.props.children }
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import {GridsterComponentInterface} from './gridster.interface';
 import {GridType} from './gridsterConfig.interface';
-import {GridsterItem} from './gridsterItem.interface';
+import {GridsterItemInterface} from './gridsterItem.interface';
 import { Renderer } from './utils/renderer';
 
 export class GridsterRenderer {
@@ -12,7 +12,7 @@ export class GridsterRenderer {
     delete this.gridster;
   }
 
-  updateItem(el: any, item: GridsterItem, renderer: Renderer) {
+  updateItem(el: any, item: GridsterItemInterface, renderer: Renderer) {
     if (this.gridster.mobile) {
       this.clearCellPosition(renderer, el);
       if (this.gridster.$options.keepFixedHeightInMobile) {

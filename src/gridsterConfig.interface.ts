@@ -1,4 +1,4 @@
-import {GridsterItem} from './gridsterItem.interface';
+import {GridsterItemInterface} from './gridsterItem.interface';
 import {GridsterItemComponentInterface} from './gridsterItemComponent.interface';
 import {GridsterComponentInterface} from './gridster.interface';
 
@@ -73,11 +73,11 @@ export interface GridsterConfig {
   initCallback?: (gridster: GridsterComponentInterface) => void;
   destroyCallback?: (gridster: GridsterComponentInterface) => void;
   gridSizeChangedCallback?: (gridster: GridsterComponentInterface) => void;
-  itemChangeCallback?: (item: GridsterItem, itemComponent: GridsterItemComponentInterface) => void;
-  itemResizeCallback?: (item: GridsterItem, itemComponent: GridsterItemComponentInterface) => void;
-  itemInitCallback?: (item: GridsterItem, itemComponent: GridsterItemComponentInterface) => void;
-  itemRemovedCallback?: (item: GridsterItem, itemComponent: GridsterItemComponentInterface) => void;
-  itemValidateCallback?: (item: GridsterItem) => boolean;
+  itemChangeCallback?: (item: GridsterItemInterface, itemComponent: GridsterItemComponentInterface) => void;
+  itemResizeCallback?: (item: GridsterItemInterface, itemComponent: GridsterItemComponentInterface) => void;
+  itemInitCallback?: (item: GridsterItemInterface, itemComponent: GridsterItemComponentInterface) => void;
+  itemRemovedCallback?: (item: GridsterItemInterface, itemComponent: GridsterItemComponentInterface) => void;
+  itemValidateCallback?: (item: GridsterItemInterface) => boolean;
   draggable?: Draggable;
   resizable?: Resizable;
   swap?: boolean;
@@ -99,19 +99,19 @@ export interface GridsterConfig {
   enableEmptyCellDrop?: boolean;
   enableEmptyCellDrag?: boolean;
   enableOccupiedCellDrop?: boolean;
-  emptyCellClickCallback?: (event: MouseEvent, item: GridsterItem) => void;
-  emptyCellContextMenuCallback?: (event: MouseEvent, item: GridsterItem) => void;
-  emptyCellDropCallback?: (event: MouseEvent, item: GridsterItem) => void;
-  emptyCellDragCallback?: (event: MouseEvent, item: GridsterItem) => void;
+  emptyCellClickCallback?: (event: MouseEvent, item: GridsterItemInterface) => void;
+  emptyCellContextMenuCallback?: (event: MouseEvent, item: GridsterItemInterface) => void;
+  emptyCellDropCallback?: (event: MouseEvent, item: GridsterItemInterface) => void;
+  emptyCellDragCallback?: (event: MouseEvent, item: GridsterItemInterface) => void;
   emptyCellDragMaxCols?: number;
   emptyCellDragMaxRows?: number;
   ignoreMarginInRow?: boolean;
   api?: {
     resize?: () => void,
     optionsChanged?: () => void,
-    getNextPossiblePosition?: (newItem: GridsterItem) => boolean,
-    getFirstPossiblePosition?: (item: GridsterItem) => GridsterItem,
-    getLastPossiblePosition?: (item: GridsterItem) => GridsterItem,
+    getNextPossiblePosition?: (newItem: GridsterItemInterface) => boolean,
+    getFirstPossiblePosition?: (item: GridsterItemInterface) => GridsterItemInterface,
+    getLastPossiblePosition?: (item: GridsterItemInterface) => GridsterItemInterface,
   };
 
   [propName: string]: any;
@@ -119,8 +119,8 @@ export interface GridsterConfig {
 
 export interface DragBase {
   enabled?: boolean;
-  stop?: (item: GridsterItem, itemComponent: GridsterItemComponentInterface, event: MouseEvent) => Promise<any> | void;
-  start?: (item: GridsterItem, itemComponent: GridsterItemComponentInterface, event: MouseEvent) => void;
+  stop?: (item: GridsterItemInterface, itemComponent: GridsterItemComponentInterface, event: MouseEvent) => Promise<any> | void;
+  start?: (item: GridsterItemInterface, itemComponent: GridsterItemComponentInterface, event: MouseEvent) => void;
   delayStart?: number;
 }
 
@@ -129,7 +129,7 @@ export interface Draggable extends DragBase {
   ignoreContent?: boolean;
   dragHandleClass?: string;
   dropOverItems?: boolean;
-  dropOverItemsCallback?: (source: GridsterItem, target: GridsterItem, grid?: GridsterComponentInterface) => void;
+  dropOverItemsCallback?: (source: GridsterItemInterface, target: GridsterItemInterface, grid?: GridsterComponentInterface) => void;
   dropOverItemStack?: boolean, 	// ����Item������һ��Item���з�Ŀ��Item�Ĵ�С������ʱҪ��֤dropOverItemStackΪfalse
   dropOverItemSplit?: boolean	// ����Item�ѵ����������ɲ��֣�����ʱҪ��֤dropOverItemSplitΪfalse
 }

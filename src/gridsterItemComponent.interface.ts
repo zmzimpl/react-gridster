@@ -1,11 +1,11 @@
-import {GridsterItem} from './gridsterItem.interface';
+import {GridsterItemInterface} from './gridsterItem.interface';
 // import {GridsterDraggable} from './gridsterDraggable.service';
 // import {GridsterResizable} from './gridsterResizable.service';
 import {GridsterComponentInterface} from './gridster.interface';
 
 export abstract class GridsterItemComponentInterface {
-  item: GridsterItem;
-  $item: GridsterItem;
+  item: GridsterItemInterface;
+  $item: GridsterItemInterface;
   top: number;
   left: number;
   width: number;
@@ -16,7 +16,7 @@ export abstract class GridsterItemComponentInterface {
   updateOptions: () => void;
   itemChanged: () => void;
   setSize: () => void;
-  checkItemChanges: (newValue: GridsterItem, oldValue: GridsterItem) => void;
+  checkItemChanges: (newValue: GridsterItemInterface, oldValue: GridsterItemInterface) => void;
   canBeDragged: () => boolean;
   canBeResized: () => boolean;
   el: any;

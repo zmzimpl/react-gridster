@@ -1,11 +1,11 @@
 import {GridsterUtils} from './gridsterUtils.service';
-import {GridsterItem, GridsterItemSplitMode} from './gridsterItem.interface';
+import {GridsterItemInterface, GridsterItemSplitMode} from './gridsterItem.interface';
 import {GridsterComponentInterface} from './gridster.interface';
 import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
 import { GridType } from './gridsterConfig.interface';
 
 export class GridsterEmptyCell {
-  initialItem: GridsterItem | null;
+  initialItem: GridsterItemInterface | null;
   emptyCellClick: Function | null;
   emptyCellClickTouch: Function | null;
   emptyCellContextMenu: Function | null;
@@ -227,14 +227,14 @@ export class GridsterEmptyCell {
     });
   }
 
-  getValidItemFromEvent(e: any, oldItem?: GridsterItem | null): GridsterItem | undefined {
+  getValidItemFromEvent(e: any, oldItem?: GridsterItemInterface | null): GridsterItemInterface | undefined {
     e.preventDefault();
     e.stopPropagation();
     GridsterUtils.checkTouchEvent(e);
     const rect = this.gridster.el.getBoundingClientRect();
     const x = e.clientX + this.gridster.el.scrollLeft - rect.left - this.gridster.$options.margin;
     const y = e.clientY + this.gridster.el.scrollTop - rect.top - this.gridster.$options.margin;
-    let item: GridsterItem = {
+    let item: GridsterItemInterface = {
       x: this.gridster.pixelsToPositionX(x, Math.floor, true),
       y: this.gridster.pixelsToPositionY(y, Math.floor, true),
       cols: this.gridster.$options.defaultItemCols,
@@ -242,7 +242,7 @@ export class GridsterEmptyCell {
     };
     let overItem: GridsterItemComponentInterface;// 重叠的图表
     if (this.gridster.$options.draggable.dropOverItemSplit) { // 开启分裂，允许堆叠上其它的已存在的图表，并且最大程度占满空白单元格（通常minRows = maxRows和minCols = maxCols）
-      const checkItem: GridsterItem = {
+      const checkItem: GridsterItemInterface = {
         x: Math.max(0, item.x), y: Math.max(0, item.y), cols: 1, rows: 1 // 计算重叠时，按一个格子计算
       }
       if ((overItem = <GridsterItemComponentInterface>this.gridster.findItemWithItem(checkItem))) {
@@ -327,7 +327,7 @@ export class GridsterEmptyCell {
     return item;
   }
   /** 分裂单元格 */
-  splitItem(item: GridsterItem, overItem: GridsterItemComponentInterface, mode: GridsterItemSplitMode): void {
+  splitItem(item: GridsterItemInterface, overItem: GridsterItemComponentInterface, mode: GridsterItemSplitMode): void {
     item.spliting = mode; // 记录当前分裂模式
     item.splitingItemComponent = overItem; // 记录分裂谁
     switch (mode) {
@@ -359,7 +359,7 @@ export class GridsterEmptyCell {
     }
   }
   /** 找出参照物 */
-  checkdReferenceItem(checkItem: GridsterItem, pos: string): GridsterItemComponentInterface | undefined {
+  checkdReferenceItem(checkItem: GridsterItemInterface, pos: string): GridsterItemComponentInterface | undefined {
     let findItem = this.gridster.findItemWithItem(checkItem);
     if (!findItem) {
       switch (pos) {
@@ -386,7 +386,7 @@ export class GridsterEmptyCell {
     }
     return findItem ? <GridsterItemComponentInterface>findItem : undefined;
   }
-  fitByReferenceItem(updateItem: GridsterItem, leftReferenceItem: GridsterItemComponentInterface, rightReferenceItem: GridsterItemComponentInterface): boolean {
+  fitByReferenceItem(updateItem: GridsterItemInterface, leftReferenceItem: GridsterItemComponentInterface, rightReferenceItem: GridsterItemComponentInterface): boolean {
     if (leftReferenceItem && !rightReferenceItem) { // 只有左边有参照物
       if (this.gridster.$options.minItemRows > leftReferenceItem.$item.rows) return false; // 高度不够
       if (this.gridster.$options.minItemCols > this.gridster.$options.maxCols - leftReferenceItem.$item.x - leftReferenceItem.$item.cols) return false; // 宽度不够
