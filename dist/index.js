@@ -1345,7 +1345,6 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
       curColWidth: 0,
       curRowHeight: 0
     };
-    _this.elRef = React.createRef();
     _this.$options = JSON.parse(JSON.stringify(GridsterConfigService));
     _this.calculateLayoutDebounce = GridsterUtils.debounce(_this.calculateLayout.bind(_assertThisInitialized(_this)), 0);
     _this.mobile = false;
@@ -1381,7 +1380,7 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.componentDidMount = function componentDidMount() {
-    this.el = this.elRef.current;
+    this.el = document.getElementById('gridster-board');
     this.setOptions();
     this.setGridSize();
     this.calculateLayout();
@@ -1480,7 +1479,7 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   _proto.setGridSize = function setGridSize() {
     var _this$$options, _this$$options2;
 
-    var el = this.el;
+    var el = document.getElementById('gridster-board');
     var width = el.clientWidth;
     var height = el.clientHeight;
     console.log(width, 'w');
@@ -1616,10 +1615,9 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
     }
 
     return React.createElement("div", {
-      ref: this.elRef,
       className: styles.gridster + ' ' + styles.displayGrid + ' ' + styles[(_this$$options5 = this.$options) === null || _this$$options5 === void 0 ? void 0 : _this$$options5.gridType],
       id: "gridster-board"
-    }, gridsterColumns, gridsterRows, this.props.children);
+    }, gridsterColumns, gridsterRows);
   };
 
   return Gridster;

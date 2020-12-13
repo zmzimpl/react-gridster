@@ -1,4 +1,4 @@
-import { Component, createRef, createElement } from 'react';
+import { Component, createElement } from 'react';
 import debounce from 'lodash/debounce';
 
 var GridType;
@@ -1280,7 +1280,6 @@ class Gridster extends Component {
       curColWidth: 0,
       curRowHeight: 0
     };
-    this.elRef = createRef();
     this.$options = JSON.parse(JSON.stringify(GridsterConfigService));
     this.calculateLayoutDebounce = GridsterUtils.debounce(this.calculateLayout.bind(this), 0);
     this.mobile = false;
@@ -1310,7 +1309,7 @@ class Gridster extends Component {
   }
 
   componentDidMount() {
-    this.el = this.elRef.current;
+    this.el = document.getElementById('gridster-board');
     this.setOptions();
     this.setGridSize();
     this.calculateLayout();
@@ -1409,7 +1408,7 @@ class Gridster extends Component {
   setGridSize() {
     var _this$$options, _this$$options2;
 
-    const el = this.el;
+    const el = document.getElementById('gridster-board');
     let width = el.clientWidth;
     let height = el.clientHeight;
     console.log(width, 'w');
@@ -1544,10 +1543,9 @@ class Gridster extends Component {
     }
 
     return createElement("div", {
-      ref: this.elRef,
       className: styles.gridster + ' ' + styles.displayGrid + ' ' + styles[(_this$$options5 = this.$options) === null || _this$$options5 === void 0 ? void 0 : _this$$options5.gridType],
       id: "gridster-board"
-    }, gridsterColumns, gridsterRows, this.props.children);
+    }, gridsterColumns, gridsterRows);
   }
 
 }

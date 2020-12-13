@@ -1,4 +1,4 @@
-import { Gridster } from './Gridster'
+import { Gridster } from '.'
 
 describe('Gridster', () => {
   it('is truthy', () => {

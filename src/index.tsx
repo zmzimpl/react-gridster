@@ -20,7 +20,6 @@ export class Gridster extends React.Component<Props> {
   calculateLayoutDebounce: () => void;
   movingItem: GridsterItemInterface | null;
   previewStyle: () => void;
-  elRef: any;
   el: any;
   $options: GridsterConfigS;
   options: GridsterConfig;
@@ -53,7 +52,6 @@ export class Gridster extends React.Component<Props> {
 
   constructor(props: Props) {
     super(props);
-    this.elRef = React.createRef();
     this.$options = JSON.parse(JSON.stringify(GridsterConfigService));
     this.calculateLayoutDebounce = GridsterUtils.debounce(this.calculateLayout.bind(this), 0);
     this.mobile = false;
@@ -66,7 +64,6 @@ export class Gridster extends React.Component<Props> {
     this.emptyCell = new GridsterEmptyCell(this);
     this.compact = new GridsterCompact(this);
     this.gridRenderer = new GridsterRenderer(this);
-   
     console.log(props);
     if (this.props.options) {
       this.options = this.props.options;
@@ -86,7 +83,7 @@ export class Gridster extends React.Component<Props> {
   }
 
   componentDidMount() {
-    this.el = this.elRef.current;
+    this.el = document.getElementById('gridster-board') as HTMLDivElement;
     this.setOptions();
     this.setGridSize();
     this.calculateLayout();
@@ -183,7 +180,7 @@ export class Gridster extends React.Component<Props> {
    * 设置画布整体大小
    */
   setGridSize(): void {
-    const el = this.el;
+    const el: HTMLDivElement = document.getElementById('gridster-board') as HTMLDivElement;
     let width = el.clientWidth;
     let height = el.clientHeight;
     console.log(width, 'w');
@@ -301,10 +298,9 @@ export class Gridster extends React.Component<Props> {
       }
     }
     return (
-      <div ref={this.elRef} className={styles.gridster + ' ' + styles.displayGrid + ' ' + styles[this.$options?.gridType]} id="gridster-board">
+      <div className={styles.gridster + ' ' + styles.displayGrid + ' ' + styles[this.$options?.gridType]} id="gridster-board">
         { ...gridsterColumns }
         { ...gridsterRows }
-        { this.props.children }
       </div>
     )
   }
