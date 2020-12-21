@@ -1,7 +1,7 @@
-import {GridsterItemInterface} from './gridsterItem.interface';
+import {GridsterItemInterface} from './GridsterItem.interface';
 // import {GridsterDraggable} from './gridsterDraggable.service';
 // import {GridsterResizable} from './gridsterResizable.service';
-import {GridsterComponentInterface} from './gridster.interface';
+import {GridsterComponentInterface} from './Gridster.interface';
 
 export abstract class GridsterItemComponentInterface {
   item: GridsterItemInterface;

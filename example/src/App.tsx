@@ -2,7 +2,7 @@ import React from 'react'
 
 import 'react-gridster/dist/index.css'
 import {Gridster} from 'react-gridster';
-import { GridsterConfig } from '../../dist/gridsterConfig.interface';
+import { GridsterConfig } from '../../dist/GridsterConfig.interface';
 
 export class App extends React.Component {
   options: GridsterConfig = {

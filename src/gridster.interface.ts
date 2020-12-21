@@ -1,10 +1,10 @@
-import {GridsterConfigS} from './gridsterConfigS.interface';
+import {GridsterConfigS} from './GridsterConfigS.interface';
 // import {GridsterEmptyCell} from './gridsterEmptyCell.service';
 // import {GridsterCompact} from './gridsterCompact.service';
-import {GridsterConfig} from './gridsterConfig.interface';
-import {GridsterItemInterface} from './gridsterItem.interface';
-import {GridsterItemComponentInterface} from './gridsterItemComponent.interface';
-import {GridsterRenderer} from './gridsterRenderer';
+import {GridsterConfig} from './GridsterConfig.interface';
+import {GridsterItemInterface} from './GridsterItem.interface';
+import {GridsterItemComponentInterface} from './GridsterItemComponent.interface';
+import {GridsterRenderer} from './GridsterRenderer';
 import { Renderer } from './utils/renderer';
 
 export abstract class GridsterComponentInterface {

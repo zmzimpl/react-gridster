@@ -1,5 +1,5 @@
-import { GridsterItemInterface } from './gridsterItem.interface';
-import { GridsterComponentInterface } from './gridster.interface';
+import { GridsterItemInterface } from './GridsterItem.interface';
+import { GridsterComponentInterface } from './Gridster.interface';
 export declare abstract class GridsterItemComponentInterface {
     item: GridsterItemInterface;
     $item: GridsterItemInterface;

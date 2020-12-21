@@ -1,2 +1,2 @@
-import { GridsterConfig } from './gridsterConfig.interface';
+import { GridsterConfig } from './GridsterConfig.interface';
 export declare const GridsterConfigService: GridsterConfig;

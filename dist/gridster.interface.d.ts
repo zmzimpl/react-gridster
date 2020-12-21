@@ -1,8 +1,8 @@
-import { GridsterConfigS } from './gridsterConfigS.interface';
-import { GridsterConfig } from './gridsterConfig.interface';
-import { GridsterItemInterface } from './gridsterItem.interface';
-import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
-import { GridsterRenderer } from './gridsterRenderer';
+import { GridsterConfigS } from './GridsterConfigS.interface';
+import { GridsterConfig } from './GridsterConfig.interface';
+import { GridsterItemInterface } from './GridsterItem.interface';
+import { GridsterItemComponentInterface } from './GridsterItemComponent.interface';
+import { GridsterRenderer } from './GridsterRenderer';
 import { Renderer } from './utils/renderer';
 export declare abstract class GridsterComponentInterface {
     $options: GridsterConfigS;

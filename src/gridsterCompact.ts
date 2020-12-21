@@ -1,7 +1,7 @@
-import {GridsterComponentInterface} from './gridster.interface';
-import {GridsterItemComponentInterface} from './gridsterItemComponent.interface';
-import {GridsterItemInterface} from './gridsterItem.interface';
-import {CompactType} from './gridsterConfig.interface';
+import {GridsterComponentInterface} from './Gridster.interface';
+import {GridsterItemComponentInterface} from './GridsterItemComponent.interface';
+import {GridsterItemInterface} from './GridsterItem.interface';
+import {CompactType} from './GridsterConfig.interface';
 
 export class GridsterCompact {
 

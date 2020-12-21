@@ -1,5 +1,5 @@
 
-import {GridsterComponentInterface} from './gridster.interface';
+import {GridsterComponentInterface} from './Gridster.interface';
 
 export class GridsterUtils {
 

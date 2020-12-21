@@ -1,6 +1,6 @@
-import {GridsterComponentInterface} from './gridster.interface';
-import {GridType} from './gridsterConfig.interface';
-import {GridsterItemInterface} from './gridsterItem.interface';
+import {GridsterComponentInterface} from './Gridster.interface';
+import {GridType} from './GridsterConfig.interface';
+import {GridsterItemInterface} from './GridsterItem.interface';
 import { Renderer } from './utils/renderer';
 
 export class GridsterRenderer {

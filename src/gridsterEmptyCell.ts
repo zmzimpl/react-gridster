@@ -1,8 +1,8 @@
-import {GridsterUtils} from './gridsterUtils.service';
-import {GridsterItemInterface, GridsterItemSplitMode} from './gridsterItem.interface';
-import {GridsterComponentInterface} from './gridster.interface';
-import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
-import { GridType } from './gridsterConfig.interface';
+import {GridsterUtils} from './GridsterUtils.service';
+import {GridsterItemInterface, GridsterItemSplitMode} from './GridsterItem.interface';
+import {GridsterComponentInterface} from './Gridster.interface';
+import { GridsterItemComponentInterface } from './GridsterItemComponent.interface';
+import { GridType } from './GridsterConfig.interface';
 
 export class GridsterEmptyCell {
   initialItem: GridsterItemInterface | null;

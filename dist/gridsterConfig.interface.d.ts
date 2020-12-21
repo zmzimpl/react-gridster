@@ -1,6 +1,6 @@
-import { GridsterItemInterface } from './gridsterItem.interface';
-import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
-import { GridsterComponentInterface } from './gridster.interface';
+import { GridsterItemInterface } from './GridsterItem.interface';
+import { GridsterItemComponentInterface } from './GridsterItemComponent.interface';
+import { GridsterComponentInterface } from './Gridster.interface';
 export declare type gridTypes = 'fit' | 'scrollVertical' | 'scrollHorizontal' | 'fixed' | 'verticalFixed' | 'horizontalFixed';
 export declare type displayGrids = 'always' | 'onDrag&Resize' | 'none';
 export declare type compactTypes = 'none' | 'compactUp' | 'compactLeft' | 'compactUp&Left' | 'compactLeft&Up' | 'compactRight' | 'compactUp&Right' | 'compactRight&Up';

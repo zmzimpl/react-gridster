@@ -1,5 +1,5 @@
-import { GridsterComponentInterface } from './gridster.interface';
-import { GridsterItemInterface } from './gridsterItem.interface';
+import { GridsterComponentInterface } from './Gridster.interface';
+import { GridsterItemInterface } from './GridsterItem.interface';
 import { Renderer } from './utils/renderer';
 export declare class GridsterRenderer {
     private gridster;

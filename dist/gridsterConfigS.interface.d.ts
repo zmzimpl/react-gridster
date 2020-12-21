@@ -1,6 +1,6 @@
-import { compactTypes, displayGrids, gridTypes } from './gridsterConfig.interface';
-import { GridsterItemInterface } from './gridsterItem.interface';
-import { GridsterComponentInterface } from './gridster.interface';
+import { compactTypes, displayGrids, gridTypes } from './GridsterConfig.interface';
+import { GridsterItemInterface } from './GridsterItem.interface';
+import { GridsterComponentInterface } from './Gridster.interface';
 export interface GridsterConfigS {
     gridType: gridTypes;
     fixedColWidth: number;

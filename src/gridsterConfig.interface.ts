@@ -1,6 +1,6 @@
-import {GridsterItemInterface} from './gridsterItem.interface';
-import {GridsterItemComponentInterface} from './gridsterItemComponent.interface';
-import {GridsterComponentInterface} from './gridster.interface';
+import {GridsterItemInterface} from './GridsterItem.interface';
+import {GridsterItemComponentInterface} from './GridsterItemComponent.interface';
+import {GridsterComponentInterface} from './Gridster.interface';
 
 export type gridTypes = 'fit' | 'scrollVertical' | 'scrollHorizontal' | 'fixed' | 'verticalFixed' | 'horizontalFixed';
 export type displayGrids = 'always' | 'onDrag&Resize' | 'none';

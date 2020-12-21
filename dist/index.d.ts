@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { GridsterConfig } from './gridsterConfig.interface';
-import { GridsterConfigS } from './gridsterConfigS.interface';
-import { GridsterRenderer } from './gridsterRenderer';
-import { GridsterItemInterface } from './gridsterItem.interface';
-import { GridsterItemComponentInterface } from './gridsterItemComponent.interface';
+import { GridsterConfig } from './GridsterConfig.interface';
+import { GridsterConfigS } from './GridsterConfigS.interface';
+import { GridsterRenderer } from './GridsterRenderer';
+import { GridsterItemInterface } from './GridsterItem.interface';
+import { GridsterItemComponentInterface } from './GridsterItemComponent.interface';
 import { Renderer } from './utils/renderer';
-import { GridsterEmptyCell } from './gridsterEmptyCell';
-import { GridsterCompact } from './gridsterCompact';
+import { GridsterEmptyCell } from './GridsterEmptyCell';
+import { GridsterCompact } from './GridsterCompact';
 interface Props {
     options: GridsterConfig;
 }
