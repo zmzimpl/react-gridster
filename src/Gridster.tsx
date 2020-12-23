@@ -164,7 +164,33 @@ export class Gridster extends React.Component<Props> {
   }
 
   addItem(itemComponent: GridsterItemComponentInterface): void {
-    console.log(itemComponent);
+    console.log('add', itemComponent);
+    if (itemComponent.$item.cols === undefined) {
+      itemComponent.$item.cols = this.$options.defaultItemCols;
+      itemComponent.item.cols = itemComponent.$item.cols;
+      itemComponent.itemChanged();
+    }
+    if (itemComponent.$item.rows === undefined) {
+      itemComponent.$item.rows = this.$options.defaultItemRows;
+      itemComponent.item.rows = itemComponent.$item.rows;
+      itemComponent.itemChanged();
+    }
+    if (itemComponent.$item.x === -1 || itemComponent.$item.y === -1) {
+      this.autoPositionItem(itemComponent);
+    } else if (this.checkCollision(itemComponent.$item)) {
+      if (!this.$options.disableWarnings) {
+        itemComponent.notPlaced = true;
+        console.warn('Can\'t be placed in the bounds of the dashboard, trying to auto position!/n' +
+          JSON.stringify(itemComponent.item, ['cols', 'rows', 'x', 'y']));
+      }
+      if (!this.$options.disableAutoPositionOnConflict) {
+        this.autoPositionItem(itemComponent);
+      } else {
+        itemComponent.notPlaced = true;
+      }
+    }
+    this.grid.push(itemComponent);
+    this.calculateLayoutDebounce();
   }
 
   removeItem(itemComponent: GridsterItemComponentInterface): void {
@@ -173,6 +199,56 @@ export class Gridster extends React.Component<Props> {
 
   setGridDimensions(): void {
 
+  }
+
+  autoPositionItem(itemComponent: GridsterItemComponentInterface): void {
+    if (this.getNextPossiblePosition(itemComponent.$item)) {
+      itemComponent.notPlaced = false;
+      itemComponent.item.x = itemComponent.$item.x;
+      itemComponent.item.y = itemComponent.$item.y;
+      itemComponent.itemChanged();
+    } else {
+      itemComponent.notPlaced = true;
+      if (!this.$options.disableWarnings) {
+        console.warn('Can\'t be placed in the bounds of the dashboard!/n' +
+          JSON.stringify(itemComponent.item, ['cols', 'rows', 'x', 'y']));
+      }
+    }
+  }
+
+  getNextPossiblePosition(newItem: GridsterItemInterface, startingFrom: { y?: number, x?: number } = {}): boolean {
+    if (newItem.cols === -1) {
+      newItem.cols = this.$options.defaultItemCols;
+    }
+    if (newItem.rows === -1) {
+      newItem.rows = this.$options.defaultItemRows;
+    }
+    this.setGridDimensions();
+    let rowsIndex = startingFrom.y || 0;
+    let colsIndex;
+    for (; rowsIndex < this.rows; rowsIndex++) {
+      newItem.y = rowsIndex;
+      colsIndex = startingFrom.x || 0;
+      for (; colsIndex < this.columns; colsIndex++) {
+        newItem.x = colsIndex;
+        if (!this.checkCollision(newItem)) {
+          return true;
+        }
+      }
+    }
+    const canAddToRows = this.$options.maxRows >= this.rows + newItem.rows;
+    const canAddToColumns = this.$options.maxCols >= this.columns + newItem.cols;
+    const addToRows = this.rows <= this.columns && canAddToRows;
+    if (!addToRows && canAddToColumns) {
+      newItem.x = this.columns;
+      newItem.y = 0;
+      return true;
+    } else if (canAddToRows) {
+      newItem.y = this.rows;
+      newItem.x = 0;
+      return true;
+    }
+    return false;
   }
 
 
@@ -301,6 +377,7 @@ export class Gridster extends React.Component<Props> {
       <div className={styles.gridster + ' ' + styles.displayGrid + ' ' + styles[this.$options?.gridType]} id="gridster-board">
         { ...gridsterColumns }
         { ...gridsterRows }
+        {this.props.children}
       </div>
     )
   }

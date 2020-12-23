@@ -1,8 +1,7 @@
 import React from 'react'
 
 import 'react-gridster/dist/index.css'
-import {Gridster} from 'react-gridster';
-import { GridsterConfig } from '../../dist/GridsterConfig.interface';
+import {Gridster, GridsterConfig, GridsterItem} from 'react-gridster';
 
 export class App extends React.Component {
   options: GridsterConfig = {
@@ -29,10 +28,28 @@ export class App extends React.Component {
 
   componentDidMount() {
     this.gridsterRef.current?.optionsChanged();
+    this.forceUpdate();
   }
   render() {
+    const item = {
+      x: 0,
+      y: 0,
+      rows: 10,
+      cols: 10
+    };
+    const items = [];
+    if (this.gridsterRef.current) {
+      items.push(<GridsterItem item={item} key={'testItem'} gridster={this.gridsterRef.current}>
+        <div>
+          11111111111111
+        </div>
+      </GridsterItem>);
+    }
+    console.log(items);
     return (
-      <Gridster ref={this.gridsterRef} options={this.options} />
+      <Gridster ref={this.gridsterRef} options={this.options} >
+        {items}
+      </Gridster>
     )
   }
 }

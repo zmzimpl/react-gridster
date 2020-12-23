@@ -1,6 +1,7 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var React = require('react');
+var React__default = _interopDefault(React);
 var debounce = _interopDefault(require('lodash/debounce'));
 
 function _extends() {
@@ -1467,7 +1468,37 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.addItem = function addItem(itemComponent) {
-    console.log(itemComponent);
+    console.log('add', itemComponent);
+
+    if (itemComponent.$item.cols === undefined) {
+      itemComponent.$item.cols = this.$options.defaultItemCols;
+      itemComponent.item.cols = itemComponent.$item.cols;
+      itemComponent.itemChanged();
+    }
+
+    if (itemComponent.$item.rows === undefined) {
+      itemComponent.$item.rows = this.$options.defaultItemRows;
+      itemComponent.item.rows = itemComponent.$item.rows;
+      itemComponent.itemChanged();
+    }
+
+    if (itemComponent.$item.x === -1 || itemComponent.$item.y === -1) {
+      this.autoPositionItem(itemComponent);
+    } else if (this.checkCollision(itemComponent.$item)) {
+      if (!this.$options.disableWarnings) {
+        itemComponent.notPlaced = true;
+        console.warn('Can\'t be placed in the bounds of the dashboard, trying to auto position!/n' + JSON.stringify(itemComponent.item, ['cols', 'rows', 'x', 'y']));
+      }
+
+      if (!this.$options.disableAutoPositionOnConflict) {
+        this.autoPositionItem(itemComponent);
+      } else {
+        itemComponent.notPlaced = true;
+      }
+    }
+
+    this.grid.push(itemComponent);
+    this.calculateLayoutDebounce();
   };
 
   _proto.removeItem = function removeItem(itemComponent) {
@@ -1475,6 +1506,68 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.setGridDimensions = function setGridDimensions() {};
+
+  _proto.autoPositionItem = function autoPositionItem(itemComponent) {
+    if (this.getNextPossiblePosition(itemComponent.$item)) {
+      itemComponent.notPlaced = false;
+      itemComponent.item.x = itemComponent.$item.x;
+      itemComponent.item.y = itemComponent.$item.y;
+      itemComponent.itemChanged();
+    } else {
+      itemComponent.notPlaced = true;
+
+      if (!this.$options.disableWarnings) {
+        console.warn('Can\'t be placed in the bounds of the dashboard!/n' + JSON.stringify(itemComponent.item, ['cols', 'rows', 'x', 'y']));
+      }
+    }
+  };
+
+  _proto.getNextPossiblePosition = function getNextPossiblePosition(newItem, startingFrom) {
+    if (startingFrom === void 0) {
+      startingFrom = {};
+    }
+
+    if (newItem.cols === -1) {
+      newItem.cols = this.$options.defaultItemCols;
+    }
+
+    if (newItem.rows === -1) {
+      newItem.rows = this.$options.defaultItemRows;
+    }
+
+    this.setGridDimensions();
+    var rowsIndex = startingFrom.y || 0;
+    var colsIndex;
+
+    for (; rowsIndex < this.rows; rowsIndex++) {
+      newItem.y = rowsIndex;
+      colsIndex = startingFrom.x || 0;
+
+      for (; colsIndex < this.columns; colsIndex++) {
+        newItem.x = colsIndex;
+
+        if (!this.checkCollision(newItem)) {
+          return true;
+        }
+      }
+    }
+
+    var canAddToRows = this.$options.maxRows >= this.rows + newItem.rows;
+    var canAddToColumns = this.$options.maxCols >= this.columns + newItem.cols;
+    var addToRows = this.rows <= this.columns && canAddToRows;
+
+    if (!addToRows && canAddToColumns) {
+      newItem.x = this.columns;
+      newItem.y = 0;
+      return true;
+    } else if (canAddToRows) {
+      newItem.y = this.rows;
+      newItem.x = 0;
+      return true;
+    }
+
+    return false;
+  };
 
   _proto.setGridSize = function setGridSize() {
     var _this$$options, _this$$options2;
@@ -1617,11 +1710,296 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
     return React.createElement("div", {
       className: styles.gridster + ' ' + styles.displayGrid + ' ' + styles[(_this$$options5 = this.$options) === null || _this$$options5 === void 0 ? void 0 : _this$$options5.gridType],
       id: "gridster-board"
-    }, gridsterColumns, gridsterRows);
+    }, gridsterColumns, gridsterRows, this.props.children);
   };
 
   return Gridster;
 }(React.Component);
 
+var GridsterItem = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(GridsterItem, _React$Component);
+
+  function GridsterItem(props) {
+    var _this;
+
+    _this = _React$Component.call(this, props) || this;
+    _this.renderer = new Renderer();
+    _this.item = _this.props.item;
+    _this.$item = {
+      cols: -1,
+      rows: -1,
+      x: -1,
+      y: -1
+    };
+    _this.gridster = _this.props.gridster;
+    _this.elRef = React__default.createRef();
+    console.log(1);
+    return _this;
+  }
+
+  var _proto = GridsterItem.prototype;
+
+  _proto.componentWillMount = function componentWillMount() {
+    this.updateOptions();
+    this.gridster.addItem(this);
+  };
+
+  _proto.componentDidMount = function componentDidMount() {
+    this.el = this.elRef.current;
+  };
+
+  _proto.updateOptions = function updateOptions() {
+    this.$item = GridsterUtils.merge(this.$item, this.item, {
+      cols: undefined,
+      rows: undefined,
+      x: undefined,
+      y: undefined,
+      dragEnabled: undefined,
+      resizeEnabled: undefined,
+      compactEnabled: undefined,
+      maxItemRows: undefined,
+      minItemRows: undefined,
+      maxItemCols: undefined,
+      minItemCols: undefined,
+      maxItemArea: undefined,
+      minItemArea: undefined
+    });
+  };
+
+  _proto.setSize = function setSize() {
+    this.renderer.setStyle(this.el, 'display', this.notPlaced ? '' : 'block');
+    this.gridster.gridRenderer.updateItem(this.el, this.$item, this.renderer);
+    this.updateItemSize();
+  };
+
+  _proto.updateItemSize = function updateItemSize() {
+    var top = this.$item.y * this.gridster.curRowHeight;
+    var left = this.$item.x * this.gridster.curColWidth;
+    var width = this.$item.cols * this.gridster.curColWidth - this.gridster.$options.margin;
+    var height = this.$item.rows * this.gridster.curRowHeight - this.gridster.$options.margin;
+
+    if (!this.init && width > 0 && height > 0) {
+      this.init = true;
+
+      if (this.item.initCallback) {
+        this.item.initCallback(this.item, this);
+      }
+
+      if (this.gridster.options.itemInitCallback) {
+        this.gridster.options.itemInitCallback(this.item, this);
+      }
+
+      if (this.gridster.$options.scrollToNewItems) {
+        this.el.scrollIntoView(false);
+      }
+    }
+
+    if (width !== this.width || height !== this.height) {
+      this.width = width;
+      this.height = height;
+
+      if (this.gridster.options.itemResizeCallback) {
+        this.gridster.options.itemResizeCallback(this.item, this);
+      }
+    }
+
+    this.top = top;
+    this.left = left;
+  };
+
+  _proto.itemChanged = function itemChanged() {
+    if (this.gridster.options.itemChangeCallback) {
+      this.gridster.options.itemChangeCallback(this.item, this);
+    }
+  };
+
+  _proto.checkItemChanges = function checkItemChanges(newValue, oldValue) {
+    if (newValue.rows === oldValue.rows && newValue.cols === oldValue.cols && newValue.x === oldValue.x && newValue.y === oldValue.y) {
+      return;
+    }
+
+    if (this.gridster.checkCollision(this.$item)) {
+      this.$item.x = oldValue.x || 0;
+      this.$item.y = oldValue.y || 0;
+      this.$item.cols = oldValue.cols || 1;
+      this.$item.rows = oldValue.rows || 1;
+      this.setSize();
+    } else {
+      this.item.cols = this.$item.cols;
+      this.item.rows = this.$item.rows;
+      this.item.x = this.$item.x;
+      this.item.y = this.$item.y;
+      this.gridster.calculateLayoutDebounce();
+      this.itemChanged();
+    }
+  };
+
+  _proto.canBeDragged = function canBeDragged() {
+    return !this.gridster.mobile && (this.$item.dragEnabled === undefined ? this.gridster.$options.draggable.enabled : this.$item.dragEnabled);
+  };
+
+  _proto.canBeResized = function canBeResized() {
+    return !this.gridster.mobile && (this.$item.resizeEnabled === undefined ? this.gridster.$options.resizable.enabled : this.$item.resizeEnabled);
+  };
+
+  _proto.render = function render() {
+    return React__default.createElement("div", {
+      ref: this.elRef
+    }, this.props.children, React__default.createElement("div", {
+      className: "gridster-item-resizable-handler handle-s"
+    }), React__default.createElement("div", {
+      className: "gridster-item-resizable-handler handle-e"
+    }), React__default.createElement("div", {
+      className: "gridster-item-resizable-handler handle-n"
+    }), React__default.createElement("div", {
+      className: "gridster-item-resizable-handler handle-w"
+    }), React__default.createElement("div", {
+      className: "gridster-item-resizable-handler handle-se"
+    }), React__default.createElement("div", {
+      className: "gridster-item-resizable-handler handle-ne"
+    }), React__default.createElement("div", {
+      className: "gridster-item-resizable-handler handle-sw"
+    }), React__default.createElement("div", {
+      className: "gridster-item-resizable-handler handle-nw"
+    }));
+  };
+
+  return GridsterItem;
+}(React__default.Component);
+
+var GridsterItemComponentInterface = function GridsterItemComponentInterface() {};
+
+var GridsterComponentInterface = function GridsterComponentInterface() {};
+
+(function (GridType) {
+  GridType["Fit"] = "fit";
+  GridType["ScrollVertical"] = "scrollVertical";
+  GridType["ScrollHorizontal"] = "scrollHorizontal";
+  GridType["Fixed"] = "fixed";
+  GridType["VerticalFixed"] = "verticalFixed";
+  GridType["HorizontalFixed"] = "horizontalFixed";
+})(exports.GridType || (exports.GridType = {}));
+
+(function (DisplayGrid) {
+  DisplayGrid["Always"] = "always";
+  DisplayGrid["OnDragAndResize"] = "onDrag&Resize";
+  DisplayGrid["None"] = "none";
+})(exports.DisplayGrid || (exports.DisplayGrid = {}));
+
+(function (CompactType) {
+  CompactType["None"] = "none";
+  CompactType["CompactUp"] = "compactUp";
+  CompactType["CompactLeft"] = "compactLeft";
+  CompactType["CompactUpAndLeft"] = "compactUp&Left";
+  CompactType["CompactLeftAndUp"] = "compactLeft&Up";
+  CompactType["CompactRight"] = "compactRight";
+  CompactType["CompactUpAndRight"] = "compactUp&Right";
+  CompactType["CompactRightAndUp"] = "compactRight&Up";
+})(exports.CompactType || (exports.CompactType = {}));
+
+var GridsterConfigService$1 = {
+  gridType: GridType.Fit,
+  fixedColWidth: 250,
+  fixedRowHeight: 250,
+  keepFixedHeightInMobile: false,
+  keepFixedWidthInMobile: false,
+  setGridSize: false,
+  compactType: CompactType.None,
+  mobileBreakpoint: 640,
+  minCols: 1,
+  maxCols: 100,
+  minRows: 1,
+  maxRows: 100,
+  defaultItemCols: 1,
+  defaultItemRows: 1,
+  maxItemCols: 50,
+  maxItemRows: 50,
+  minItemCols: 1,
+  minItemRows: 1,
+  minItemArea: 1,
+  maxItemArea: 2500,
+  margin: 10,
+  outerMargin: true,
+  outerMarginTop: null,
+  outerMarginRight: null,
+  outerMarginBottom: null,
+  outerMarginLeft: null,
+  useTransformPositioning: true,
+  scrollSensitivity: 10,
+  scrollSpeed: 20,
+  initCallback: undefined,
+  destroyCallback: undefined,
+  gridSizeChangedCallback: undefined,
+  itemChangeCallback: undefined,
+  itemResizeCallback: undefined,
+  itemInitCallback: undefined,
+  itemRemovedCallback: undefined,
+  itemValidateCallback: undefined,
+  enableEmptyCellClick: false,
+  enableEmptyCellContextMenu: false,
+  enableEmptyCellDrop: false,
+  enableEmptyCellDrag: false,
+  enableOccupiedCellDrop: false,
+  emptyCellClickCallback: undefined,
+  emptyCellContextMenuCallback: undefined,
+  emptyCellDropCallback: undefined,
+  emptyCellDragCallback: undefined,
+  emptyCellDragMaxCols: 50,
+  emptyCellDragMaxRows: 50,
+  ignoreMarginInRow: false,
+  draggable: {
+    delayStart: 0,
+    enabled: false,
+    ignoreContentClass: 'gridster-item-content',
+    ignoreContent: false,
+    dragHandleClass: 'drag-handler',
+    stop: undefined,
+    start: undefined,
+    dropOverItems: false,
+    dropOverItemsCallback: undefined,
+    dropOverItemSplit: false,
+    dropOverItemStack: false
+  },
+  resizable: {
+    delayStart: 0,
+    enabled: false,
+    handles: {
+      s: true,
+      e: true,
+      n: true,
+      w: true,
+      se: true,
+      ne: true,
+      sw: true,
+      nw: true
+    },
+    stop: undefined,
+    start: undefined
+  },
+  swap: true,
+  swapWhileDragging: false,
+  pushItems: false,
+  disablePushOnDrag: false,
+  disablePushOnResize: false,
+  pushDirections: {
+    north: true,
+    east: true,
+    south: true,
+    west: true
+  },
+  pushResizeItems: false,
+  displayGrid: DisplayGrid.OnDragAndResize,
+  disableWindowResize: false,
+  disableWarnings: false,
+  scrollToNewItems: false,
+  disableScrollHorizontal: false,
+  disableScrollVertical: false,
+  disableAutoPositionOnConflict: false
+};
+
 exports.Gridster = Gridster;
+exports.GridsterComponentInterface = GridsterComponentInterface;
+exports.GridsterConfigService = GridsterConfigService$1;
+exports.GridsterItem = GridsterItem;
+exports.GridsterItemComponentInterface = GridsterItemComponentInterface;
 //# sourceMappingURL=index.js.map

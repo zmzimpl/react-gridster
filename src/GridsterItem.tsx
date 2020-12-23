@@ -40,6 +40,7 @@ export class GridsterItem extends React.Component<GridsterItemProp> implements G
         };
         this.gridster = this.props.gridster;
         this.elRef = React.createRef();
+        console.log(1);
     }
 
     componentWillMount() {

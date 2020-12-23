@@ -1,7 +1,7 @@
 import { GridsterItemComponentInterface } from "./GridsterItemComponent.interface";
 import React from "react";
 import { GridsterItemInterface } from "./GridsterItem.interface";
-import { Gridster } from ".";
+import { Gridster } from "./Gridster";
 import { Renderer } from "./utils/renderer";
 interface GridsterItemProp {
     item: GridsterItemInterface;
