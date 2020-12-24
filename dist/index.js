@@ -1716,6 +1716,8 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   return Gridster;
 }(React.Component);
 
+var styles$1 = {"gridsterItem":"_GridsterItem__gridsterItem__1winc","gridster-item-moving":"_GridsterItem__gridster-item-moving__26JbF","gridster-item-resizing":"_GridsterItem__gridster-item-resizing__3P1oF","gridster-item-resizable-handler":"_GridsterItem__gridster-item-resizable-handler__1860O","handle-n":"_GridsterItem__handle-n__3py2J","handle-e":"_GridsterItem__handle-e__1w0Wv","handle-s":"_GridsterItem__handle-s__3cSXq","handle-w":"_GridsterItem__handle-w__wtPSU","handle-ne":"_GridsterItem__handle-ne__HhaiT","handle-nw":"_GridsterItem__handle-nw__1tRWe","handle-se":"_GridsterItem__handle-se__1LUGQ","handle-sw":"_GridsterItem__handle-sw__KuCBq"};
+
 var GridsterItem = /*#__PURE__*/function (_React$Component) {
   _inheritsLoose(GridsterItem, _React$Component);
 
@@ -1844,7 +1846,8 @@ var GridsterItem = /*#__PURE__*/function (_React$Component) {
 
   _proto.render = function render() {
     return React__default.createElement("div", {
-      ref: this.elRef
+      ref: this.elRef,
+      className: styles$1.gridsterItem
     }, this.props.children, React__default.createElement("div", {
       className: "gridster-item-resizable-handler handle-s"
     }), React__default.createElement("div", {

@@ -1,4 +1,4 @@
-gridster-item {
+.gridsterItem {
     box-sizing: border-box;
     z-index: 1;
     position: absolute;
@@ -9,11 +9,11 @@ gridster-item {
     user-select: text;
   }
   
-  gridster-item.gridster-item-moving {
+  .gridsterItem.gridster-item-moving {
     cursor: move;
   }
   
-  gridster-item.gridster-item-resizing, gridster-item.gridster-item-moving {
+  .gridsterItem.gridster-item-resizing, .gridsterItem.gridster-item-moving {
     transition: 0s;
     z-index: 2;
     box-shadow: 0 0 5px 5px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
@@ -91,7 +91,7 @@ gridster-item {
     bottom: 0;
   }
   
-  gridster-item:hover .gridster-item-resizable-handler.handle-se {
+  .gridsterItem:hover .gridster-item-resizable-handler.handle-se {
     border-color: transparent transparent #ccc
   }
   

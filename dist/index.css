@@ -60,5 +60,103 @@
   border-bottom: 1px solid white;
 }
 
-
-
+._GridsterItem__gridsterItem__1winc {
+    box-sizing: border-box;
+    z-index: 1;
+    position: absolute;
+    overflow: hidden;
+    transition: .3s;
+    display: none;
+    background: white;
+    -webkit-user-select: text;
+       -moz-user-select: text;
+        -ms-user-select: text;
+            user-select: text;
+  }
+  
+  ._GridsterItem__gridsterItem__1winc._GridsterItem__gridster-item-moving__26JbF {
+    cursor: move;
+  }
+  
+  ._GridsterItem__gridsterItem__1winc._GridsterItem__gridster-item-resizing__3P1oF, ._GridsterItem__gridsterItem__1winc._GridsterItem__gridster-item-moving__26JbF {
+    transition: 0s;
+    z-index: 2;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O {
+    position: absolute;
+    z-index: 2;
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-n__3py2J {
+    cursor: n-resize;
+    height: 10px;
+    right: 0;
+    top: 0;
+    left: 0;
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-e__1w0Wv {
+    cursor: e-resize;
+    width: 10px;
+    bottom: 0;
+    right: 0;
+    top: 0;
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-s__3cSXq {
+    cursor: s-resize;
+    height: 10px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-w__wtPSU {
+    cursor: w-resize;
+    width: 10px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-ne__HhaiT {
+    cursor: ne-resize;
+    width: 10px;
+    height: 10px;
+    right: 0;
+    top: 0;
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-nw__1tRWe {
+    cursor: nw-resize;
+    width: 10px;
+    height: 10px;
+    left: 0;
+    top: 0;
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-se__1LUGQ {
+    cursor: se-resize;
+    width: 0;
+    height: 0;
+    right: 0;
+    bottom: 0;
+    border-style: solid;
+    border-width: 0 0 10px 10px;
+    border-color: transparent;
+  }
+  
+  ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-sw__KuCBq {
+    cursor: sw-resize;
+    width: 10px;
+    height: 10px;
+    left: 0;
+    bottom: 0;
+  }
+  
+  ._GridsterItem__gridsterItem__1winc:hover ._GridsterItem__gridster-item-resizable-handler__1860O._GridsterItem__handle-se__1LUGQ {
+    border-color: transparent transparent #ccc
+  }
+  
