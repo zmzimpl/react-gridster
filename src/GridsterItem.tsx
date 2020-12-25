@@ -30,6 +30,16 @@ export class GridsterItem extends React.Component<GridsterItemProp> implements G
 
     renderer: Renderer = new Renderer();
 
+    state = {
+      item: null,
+      $item: null,
+      top: 0,
+      left: 0,
+      width: 0,
+      height: 0,
+      init: false
+    }
+
     constructor(props: GridsterItemProp) {
         super(props);
         this.item = this.props.item;
@@ -41,12 +51,22 @@ export class GridsterItem extends React.Component<GridsterItemProp> implements G
         };
         this.gridster = this.props.gridster;
         this.elRef = React.createRef();
-        console.log(1);
+        this.updateOptions();
     }
 
     componentWillMount() {
-        this.updateOptions();
+      console.log(1);
         this.gridster.addItem(this);
+    }
+
+    componentDidUpdate() {
+      console.log(2);
+      console.log(this.item);
+      this.updateOptions();
+
+      if (!this.init) {
+        this.gridster.calculateLayoutDebounce();
+      }
     }
 
     componentDidMount() {

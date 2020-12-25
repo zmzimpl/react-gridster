@@ -1344,7 +1344,8 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
       curWidth: 0,
       curHeight: 0,
       curColWidth: 0,
-      curRowHeight: 0
+      curRowHeight: 0,
+      grid: []
     };
     _this.$options = JSON.parse(JSON.stringify(GridsterConfigService));
     _this.calculateLayoutDebounce = GridsterUtils.debounce(_this.calculateLayout.bind(_assertThisInitialized(_this)), 0);
@@ -1498,6 +1499,9 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
     }
 
     this.grid.push(itemComponent);
+    this.setState({
+      grid: this.grid
+    });
     this.calculateLayoutDebounce();
   };
 
@@ -1505,7 +1509,44 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
     console.log(itemComponent);
   };
 
-  _proto.setGridDimensions = function setGridDimensions() {};
+  _proto.setGridDimensions = function setGridDimensions() {
+    this.setGridSize();
+
+    if (!this.mobile && this.$options.mobileBreakpoint > this.curWidth) {
+      this.mobile = !this.mobile;
+      this.renderer.addClass(this.el, 'mobile');
+    } else if (this.mobile && this.$options.mobileBreakpoint < this.curWidth) {
+      this.mobile = !this.mobile;
+      this.renderer.removeClass(this.el, 'mobile');
+    }
+
+    var rows = this.$options.minRows;
+    var columns = this.$options.minCols;
+    var widgetsIndex = this.grid.length - 1;
+    var widget;
+
+    for (; widgetsIndex >= 0; widgetsIndex--) {
+      widget = this.grid[widgetsIndex];
+
+      if (!widget.notPlaced) {
+        rows = Math.max(rows, widget.$item.y + widget.$item.rows);
+        columns = Math.max(columns, widget.$item.x + widget.$item.cols);
+      }
+    }
+
+    if (this.columns !== columns || this.rows !== rows) {
+      this.columns = columns;
+      this.rows = rows;
+      this.setState({
+        rows: this.rows,
+        columns: this.columns
+      });
+
+      if (this.options.gridSizeChangedCallback) {
+        this.options.gridSizeChangedCallback(this);
+      }
+    }
+  };
 
   _proto.autoPositionItem = function autoPositionItem(itemComponent) {
     if (this.getNextPossiblePosition(itemComponent.$item)) {
@@ -1575,8 +1616,6 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
     var el = document.getElementById('gridster-board');
     var width = el.clientWidth;
     var height = el.clientHeight;
-    console.log(width, 'w');
-    console.log(height, 'h');
 
     if (((_this$$options = this.$options) === null || _this$$options === void 0 ? void 0 : _this$$options.setGridSize) || ((_this$$options2 = this.$options) === null || _this$$options2 === void 0 ? void 0 : _this$$options2.gridType) === 'fit' && !this.mobile) {
       width = el.offsetWidth;
@@ -1615,16 +1654,89 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.calculateLayout = function calculateLayout() {
-    var _this$$options3, _this$$options4;
+    if (this.compact) {
+      this.compact.checkCompact();
+    }
 
-    var marginWidth = -((_this$$options3 = this.$options) === null || _this$$options3 === void 0 ? void 0 : _this$$options3.margin) || 0;
-    this.curColWidth = (this.curWidth - marginWidth) / this.columns;
-    var marginHeight = -((_this$$options4 = this.$options) === null || _this$$options4 === void 0 ? void 0 : _this$$options4.margin) || 0;
-    this.curRowHeight = (this.curHeight - marginHeight) / this.rows;
-    this.setState({
-      curColWidth: this.curColWidth,
-      curRowHeight: this.curRowHeight
-    });
+    this.setGridDimensions();
+
+    if (this.$options.outerMargin) {
+      var marginWidth = -this.$options.margin;
+
+      if (this.$options.outerMarginLeft !== null) {
+        marginWidth += this.$options.outerMarginLeft;
+        this.renderer.setStyle(this.el, 'padding-left', this.$options.outerMarginLeft + 'px');
+      } else {
+        marginWidth += this.$options.margin;
+        this.renderer.setStyle(this.el, 'padding-left', this.$options.margin + 'px');
+      }
+
+      if (this.$options.outerMarginRight !== null) {
+        marginWidth += this.$options.outerMarginRight;
+        this.renderer.setStyle(this.el, 'padding-right', this.$options.outerMarginRight + 'px');
+      } else {
+        marginWidth += this.$options.margin;
+        this.renderer.setStyle(this.el, 'padding-right', this.$options.margin + 'px');
+      }
+
+      this.curColWidth = (this.curWidth - marginWidth) / this.columns;
+      var marginHeight = -this.$options.margin;
+
+      if (this.$options.outerMarginTop !== null) {
+        marginHeight += this.$options.outerMarginTop;
+        this.renderer.setStyle(this.el, 'padding-top', this.$options.outerMarginTop + 'px');
+      } else {
+        marginHeight += this.$options.margin;
+        this.renderer.setStyle(this.el, 'padding-top', this.$options.margin + 'px');
+      }
+
+      if (this.$options.outerMarginBottom !== null) {
+        marginHeight += this.$options.outerMarginBottom;
+        this.renderer.setStyle(this.el, 'padding-bottom', this.$options.outerMarginBottom + 'px');
+      } else {
+        marginHeight += this.$options.margin;
+        this.renderer.setStyle(this.el, 'padding-bottom', this.$options.margin + 'px');
+      }
+
+      this.curRowHeight = (this.curHeight - marginHeight) / this.rows;
+    } else {
+      this.curColWidth = (this.curWidth + this.$options.margin) / this.columns;
+      this.curRowHeight = (this.curHeight + this.$options.margin) / this.rows;
+      this.setState({
+        curColWidth: this.curColWidth,
+        curRowHeight: this.curRowHeight
+      });
+      this.renderer.setStyle(this.el, 'padding-left', 0 + 'px');
+      this.renderer.setStyle(this.el, 'padding-right', 0 + 'px');
+      this.renderer.setStyle(this.el, 'padding-top', 0 + 'px');
+      this.renderer.setStyle(this.el, 'padding-bottom', 0 + 'px');
+    }
+
+    this.gridRenderer.updateGridster();
+
+    if (this.$options.setGridSize) {
+      this.renderer.addClass(this.el, 'gridSize');
+
+      if (!this.mobile) {
+        this.renderer.setStyle(this.el, 'width', this.columns * this.curColWidth + this.$options.margin + 'px');
+        this.renderer.setStyle(this.el, 'height', this.rows * this.curRowHeight + this.$options.margin + 'px');
+      }
+    } else {
+      this.renderer.removeClass(this.el, 'gridSize');
+      this.renderer.setStyle(this.el, 'width', '');
+      this.renderer.setStyle(this.el, 'height', '');
+    }
+
+    this.updateGrid();
+    var widgetsIndex = this.grid.length - 1;
+    var widget;
+
+    for (; widgetsIndex >= 0; widgetsIndex--) {
+      widget = this.grid[widgetsIndex];
+      widget.setSize();
+    }
+
+    setTimeout(this.resize.bind(this), 100);
   };
 
   _proto.updateGrid = function updateGrid() {
@@ -1681,7 +1793,7 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.render = function render() {
-    var _this$$options5;
+    var _this$$options3;
 
     var gridsterColumns = [];
     var gridsterRows = [];
@@ -1708,7 +1820,7 @@ var Gridster = /*#__PURE__*/function (_React$Component) {
     }
 
     return React.createElement("div", {
-      className: styles.gridster + ' ' + styles.displayGrid + ' ' + styles[(_this$$options5 = this.$options) === null || _this$$options5 === void 0 ? void 0 : _this$$options5.gridType],
+      className: styles.gridster + ' ' + styles.displayGrid + ' ' + styles[(_this$$options3 = this.$options) === null || _this$$options3 === void 0 ? void 0 : _this$$options3.gridType],
       id: "gridster-board"
     }, gridsterColumns, gridsterRows, this.props.children);
   };
@@ -1726,6 +1838,15 @@ var GridsterItem = /*#__PURE__*/function (_React$Component) {
 
     _this = _React$Component.call(this, props) || this;
     _this.renderer = new Renderer();
+    _this.state = {
+      item: null,
+      $item: null,
+      top: 0,
+      left: 0,
+      width: 0,
+      height: 0,
+      init: false
+    };
     _this.item = _this.props.item;
     _this.$item = {
       cols: -1,
@@ -1735,15 +1856,27 @@ var GridsterItem = /*#__PURE__*/function (_React$Component) {
     };
     _this.gridster = _this.props.gridster;
     _this.elRef = React__default.createRef();
-    console.log(1);
+
+    _this.updateOptions();
+
     return _this;
   }
 
   var _proto = GridsterItem.prototype;
 
   _proto.componentWillMount = function componentWillMount() {
-    this.updateOptions();
+    console.log(1);
     this.gridster.addItem(this);
+  };
+
+  _proto.componentDidUpdate = function componentDidUpdate() {
+    console.log(2);
+    console.log(this.item);
+    this.updateOptions();
+
+    if (!this.init) {
+      this.gridster.calculateLayoutDebounce();
+    }
   };
 
   _proto.componentDidMount = function componentDidMount() {

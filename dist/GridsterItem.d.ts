@@ -20,8 +20,18 @@ export declare class GridsterItem extends React.Component<GridsterItemProp> impl
     notPlaced: boolean;
     init: boolean;
     renderer: Renderer;
+    state: {
+        item: null;
+        $item: null;
+        top: number;
+        left: number;
+        width: number;
+        height: number;
+        init: boolean;
+    };
     constructor(props: GridsterItemProp);
     componentWillMount(): void;
+    componentDidUpdate(): void;
     componentDidMount(): void;
     updateOptions(): void;
     setSize(): void;

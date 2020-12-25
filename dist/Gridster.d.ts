@@ -40,6 +40,7 @@ export declare class Gridster extends React.Component<Props> {
         curHeight: number;
         curColWidth: number;
         curRowHeight: number;
+        grid: never[];
     };
     constructor(props: Props);
     componentDidUpdate(): void;

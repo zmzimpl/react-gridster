@@ -32,8 +32,8 @@ export class App extends React.Component {
   }
   render() {
     const item = {
-      x: 0,
-      y: 0,
+      x: 1,
+      y: 4,
       rows: 10,
       cols: 10
     };
