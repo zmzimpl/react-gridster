@@ -166,7 +166,7 @@ export class GridsterItem extends React.Component<GridsterItemProp> implements G
           return (
             <div ref={ this.elRef } className={styles.gridsterItem}>
                 { this.props.children }
-                <div className="gridster-item-resizable-handler handle-s"></div>
+                <div className={styles['gridster-item-resizable-handler handle-s']}></div>
                 <div className="gridster-item-resizable-handler handle-e"></div>
                 <div className="gridster-item-resizable-handler handle-n"></div>
                 <div className="gridster-item-resizable-handler handle-w"></div>
