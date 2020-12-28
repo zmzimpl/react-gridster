@@ -1982,7 +1982,7 @@ var GridsterItem = /*#__PURE__*/function (_React$Component) {
       ref: this.elRef,
       className: styles$1.gridsterItem
     }, this.props.children, React__default.createElement("div", {
-      className: styles$1['gridster-item-resizable-handler handle-s']
+      className: "gridster-item-resizable-handler handle-s"
     }), React__default.createElement("div", {
       className: "gridster-item-resizable-handler handle-e"
     }), React__default.createElement("div", {
