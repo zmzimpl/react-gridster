@@ -92,38 +92,38 @@ export class GridsterItem extends React.Component<GridsterItemProp> implements G
     }
 
     setSize(): void {
-        this.renderer.setStyle(this.el, 'display', this.notPlaced ? '' : 'block');
-        this.gridster.gridRenderer.updateItem(this.el, this.$item, this.renderer);
-        this.updateItemSize();
+      this.renderer.setStyle(this.el, 'display', this.notPlaced ? '' : 'block');
+      this.gridster.gridRenderer.updateItem(this.el, this.$item, this.renderer);
+      this.updateItemSize();
     }
 
     updateItemSize() {
-        const top = this.$item.y * this.gridster.curRowHeight;
-        const left = this.$item.x * this.gridster.curColWidth;
-        const width = this.$item.cols * this.gridster.curColWidth - this.gridster.$options.margin;
-        const height = this.$item.rows * this.gridster.curRowHeight - this.gridster.$options.margin;
-    
-        if (!this.init && width > 0 && height > 0) {
-          this.init = true;
-          if (this.item.initCallback) {
-            this.item.initCallback(this.item, this);
-          }
-          if (this.gridster.options.itemInitCallback) {
-            this.gridster.options.itemInitCallback(this.item, this);
-          }
-          if (this.gridster.$options.scrollToNewItems) {
-            this.el.scrollIntoView(false);
-          }
+      const top = this.$item.y * this.gridster.curRowHeight;
+      const left = this.$item.x * this.gridster.curColWidth;
+      const width = this.$item.cols * this.gridster.curColWidth - this.gridster.$options.margin;
+      const height = this.$item.rows * this.gridster.curRowHeight - this.gridster.$options.margin;
+  
+      if (!this.init && width > 0 && height > 0) {
+        this.init = true;
+        if (this.item.initCallback) {
+          this.item.initCallback(this.item, this);
         }
-        if (width !== this.width || height !== this.height) {
-          this.width = width;
-          this.height = height;
-          if (this.gridster.options.itemResizeCallback) {
-            this.gridster.options.itemResizeCallback(this.item, this);
-          }
+        if (this.gridster.options.itemInitCallback) {
+          this.gridster.options.itemInitCallback(this.item, this);
         }
-        this.top = top;
-        this.left = left;
+        if (this.gridster.$options.scrollToNewItems) {
+          this.el.scrollIntoView(false);
+        }
+      }
+      if (width !== this.width || height !== this.height) {
+        this.width = width;
+        this.height = height;
+        if (this.gridster.options.itemResizeCallback) {
+          this.gridster.options.itemResizeCallback(this.item, this);
+        }
+      }
+      this.top = top;
+      this.left = left;
     }
 
     itemChanged(): void {
