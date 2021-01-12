@@ -19,12 +19,12 @@
     box-shadow: 0 0 5px 5px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
   }
   
-  .gridster-item-resizable-handler {
+  .gridsterItemResizableHandler {
     position: absolute;
     z-index: 2;
   }
   
-  .gridster-item-resizable-handler.handle-n {
+  .gridsterItemResizableHandler.handle-n {
     cursor: n-resize;
     height: 10px;
     right: 0;
@@ -32,7 +32,7 @@
     left: 0;
   }
   
-  .gridster-item-resizable-handler.handle-e {
+  .gridsterItemResizableHandler.handle-e {
     cursor: e-resize;
     width: 10px;
     bottom: 0;
@@ -40,7 +40,7 @@
     top: 0;
   }
   
-  .gridster-item-resizable-handler.handle-s {
+  .gridsterItemResizableHandler.handle-s {
     cursor: s-resize;
     height: 10px;
     right: 0;
@@ -48,7 +48,7 @@
     left: 0;
   }
   
-  .gridster-item-resizable-handler.handle-w {
+  .gridsterItemResizableHandler.handle-w {
     cursor: w-resize;
     width: 10px;
     left: 0;
@@ -56,7 +56,7 @@
     bottom: 0;
   }
   
-  .gridster-item-resizable-handler.handle-ne {
+  .gridsterItemResizableHandler.handle-ne {
     cursor: ne-resize;
     width: 10px;
     height: 10px;
@@ -64,7 +64,7 @@
     top: 0;
   }
   
-  .gridster-item-resizable-handler.handle-nw {
+  .gridsterItemResizableHandler.handle-nw {
     cursor: nw-resize;
     width: 10px;
     height: 10px;
@@ -72,7 +72,7 @@
     top: 0;
   }
   
-  .gridster-item-resizable-handler.handle-se {
+  .gridsterItemResizableHandler.handle-se {
     cursor: se-resize;
     width: 0;
     height: 0;
@@ -83,7 +83,7 @@
     border-color: transparent;
   }
   
-  .gridster-item-resizable-handler.handle-sw {
+  .gridsterItemResizableHandler.handle-sw {
     cursor: sw-resize;
     width: 10px;
     height: 10px;
@@ -91,7 +91,7 @@
     bottom: 0;
   }
   
-  .gridsterItem:hover .gridster-item-resizable-handler.handle-se {
+  .gridsterItem:hover .gridsterItemResizableHandler.handle-se {
     border-color: transparent transparent #ccc
   }
   
