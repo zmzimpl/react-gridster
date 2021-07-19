@@ -1,0 +1,97 @@
+.gridsterItem {
+    box-sizing: border-box;
+    z-index: 1;
+    position: absolute;
+    overflow: hidden;
+    transition: .3s;
+    display: none;
+    background: white;
+    user-select: text;
+  }
+  
+  .gridsterItem.gridsterItemMoving {
+    cursor: move;
+  }
+  
+  .gridsterItem.gridsterItemResizing, .gridsterItem.gridsterItemMoving {
+    transition: 0s;
+    z-index: 2;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
+  }
+  
+  .gridsterItemResizableHandler {
+    position: absolute;
+    z-index: 2;
+  }
+  
+  .gridsterItemResizableHandler.handleN {
+    cursor: n-resize;
+    height: 10px;
+    right: 0;
+    top: 0;
+    left: 0;
+  }
+  
+  .gridsterItemResizableHandler.handleE {
+    cursor: e-resize;
+    width: 10px;
+    bottom: 0;
+    right: 0;
+    top: 0;
+  }
+  
+  .gridsterItemResizableHandler.handleS {
+    cursor: s-resize;
+    height: 10px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+  
+  .gridsterItemResizableHandler.handleW {
+    cursor: w-resize;
+    width: 10px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
+  
+  .gridsterItemResizableHandler.handleNE {
+    cursor: ne-resize;
+    width: 10px;
+    height: 10px;
+    right: 0;
+    top: 0;
+  }
+  
+  .gridsterItemResizableHandler.handleNW {
+    cursor: nw-resize;
+    width: 10px;
+    height: 10px;
+    left: 0;
+    top: 0;
+  }
+  
+  .gridsterItemResizableHandler.handleSE {
+    cursor: se-resize;
+    width: 0;
+    height: 0;
+    right: 0;
+    bottom: 0;
+    border-style: solid;
+    border-width: 0 0 10px 10px;
+    border-color: transparent;
+  }
+  
+  .gridsterItemResizableHandler.handleSW {
+    cursor: sw-resize;
+    width: 10px;
+    height: 10px;
+    left: 0;
+    bottom: 0;
+  }
+  
+  .gridsterItem:hover .gridsterItemResizableHandler.handleSE {
+    border-color: transparent transparent #ccc
+  }
+  
