@@ -1,9 +1,10 @@
-import {compactTypes, displayGrids, gridTypes} from './GridsterConfig.interface';
-import {GridsterItemInterface} from './GridsterItem.interface';
-import {GridsterComponentInterface} from './Gridster.interface';
+import {GridsterComponentInterface} from './gridster.interface';
+import {compactTypes, dirTypes, displayGrids, gridTypes} from './gridsterConfig.interface';
+import {GridsterItem, GridsterItemComponentInterface} from './gridsterItem.interface';
 
 export interface GridsterConfigS {
   gridType: gridTypes;
+  scale?: number;
   fixedColWidth: number;
   fixedRowHeight: number;
   keepFixedHeightInMobile: boolean;
@@ -11,6 +12,10 @@ export interface GridsterConfigS {
   setGridSize: boolean;
   compactType: compactTypes;
   mobileBreakpoint: number;
+  allowMultiLayer: boolean;
+  defaultLayerIndex: number;
+  maxLayerIndex: number;
+  baseLayerIndex: number;
   minCols: number;
   maxCols: number;
   minRows: number;
@@ -23,6 +28,7 @@ export interface GridsterConfigS {
   minItemRows: number;
   minItemArea: number;
   maxItemArea: number;
+  rowHeightRatio: number;
   margin: number;
   outerMargin: boolean;
   outerMarginTop: number | null;
@@ -56,14 +62,17 @@ export interface GridsterConfigS {
   emptyCellDragMaxCols: number;
   emptyCellDragMaxRows: number;
   ignoreMarginInRow: boolean;
+  dirType: dirTypes;
   api: {
     resize: () => void,
     optionsChanged: () => void,
-    getNextPossiblePosition: (newItem: GridsterItemInterface) => boolean,
-    getFirstPossiblePosition: (item: GridsterItemInterface) => GridsterItemInterface,
-    getLastPossiblePosition: (item: GridsterItemInterface) => GridsterItemInterface,
+    getNextPossiblePosition: (newItem: GridsterItem) => boolean,
+    getFirstPossiblePosition: (item: GridsterItem) => GridsterItem,
+    getLastPossiblePosition: (item: GridsterItem) => GridsterItem,
+    getItemComponent: (item: GridsterItem) => GridsterItemComponentInterface | undefined;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [propName: string]: any;
 }
 
@@ -71,6 +80,7 @@ export interface DragBase {
   enabled: boolean;
   delayStart: number;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [propName: string]: any;
 }
 
@@ -79,9 +89,7 @@ export interface Draggable extends DragBase {
   ignoreContent: boolean;
   dragHandleClass: string;
   dropOverItems: boolean;
-  dropOverItemsCallback: (source: GridsterItemInterface, target: GridsterItemInterface, grid?: GridsterComponentInterface) => void;
-  dropOverItemStack?: boolean, 
-  dropOverItemSplit?: boolean
+  dropOverItemsCallback: (source: GridsterItem, target: GridsterItem, grid?: GridsterComponentInterface) => void;
 }
 
 export interface Resizable extends DragBase {

@@ -1,57 +1,44 @@
 import React from 'react'
 
+import { GridsterItem, ReactGridster, ReactGridsterItem } from 'react-gridster'
 import 'react-gridster/dist/index.css'
-import {Gridster, GridsterConfig, GridsterItem} from 'react-gridster';
+import { GridsterConfig } from '../../dist/gridsterConfig.interface'
 
-export class App extends React.Component {
-  options: GridsterConfig = {
-    minCols: 32,
-    maxCols: 32,
-    minRows: 21,
-    maxRows: 21,
-    gridType: 'fit',
-    displayGrid: 'always',
-    enableEmptyCellClick: false,
-    enableEmptyCellContextMenu: false,
-    enableEmptyCellDrop: false,
-    enableEmptyCellDrag: false,
-    enableOccupiedCellDrop: false,
-    emptyCellDragMaxCols: 50,
-    emptyCellDragMaxRows: 50,
-  }
-  gridsterRef: React.RefObject<Gridster>;
+const option: GridsterConfig = {
+  minCols: 32,
+  maxCols: 32,
+  minRows: 21,
+  maxRows: 21,
+  gridType: 'fit',
+  displayGrid: 'always',
+  enableEmptyCellClick: false,
+  enableEmptyCellContextMenu: false,
+  enableEmptyCellDrop: false,
+  enableEmptyCellDrag: false,
+  enableOccupiedCellDrop: false,
+  emptyCellDragMaxCols: 50,
+  emptyCellDragMaxRows: 50,
+}
 
-  constructor(prop: any) {
-    super(prop);
-    this.gridsterRef = React.createRef();
-  }
+const item: GridsterItem = {
+  x: 1,
+  y: 4,
+  rows: 10,
+  cols: 10
+};
 
-  componentDidMount() {
-    this.gridsterRef.current?.optionsChanged();
-    this.forceUpdate();
-  }
-  render() {
-    const item = {
-      x: 1,
-      y: 4,
-      rows: 10,
-      cols: 10
-    };
-    const items = [];
-    if (this.gridsterRef.current) {
-      items.push(<GridsterItem item={item} key={'testItem'} gridster={this.gridsterRef.current}>
-        <div>
-          11111111111111
-        </div>
-      </GridsterItem>);
-    }
-    console.log(items);
-    return (
-      <Gridster ref={this.gridsterRef} options={this.options} >
-        {items}
-      </Gridster>
-    )
-  }
+const itemComponent = (
+        <ReactGridsterItem item={item} >
+          <div>
+            11111111111111
+          </div>
+        </ReactGridsterItem>
+);
+
+const App = () => {
+  return (<ReactGridster options={option} >
+    {itemComponent}
+  </ReactGridster>)
 }
 
 export default App

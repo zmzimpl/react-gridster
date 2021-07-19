@@ -1,7 +1,8 @@
-import {CompactType, DisplayGrid, GridsterConfig, GridType} from './GridsterConfig.interface';
+import {CompactType, DirTypes, DisplayGrid, GridsterConfig, GridType} from './gridsterConfig.interface';
 
 export const GridsterConfigService: GridsterConfig = {
   gridType: GridType.Fit, // 'fit' will fit the items in the container without scroll;
+  scale: 1, // scale param to zoom in/zoom out
   // 'scrollVertical' will fit on width and height of the items will be the same as the width
   // 'scrollHorizontal' will fit on height and width of the items will be the same as the height
   // 'fixed' will set the rows and columns dimensions based on fixedColWidth and fixedRowHeight options
@@ -14,6 +15,10 @@ export const GridsterConfigService: GridsterConfig = {
   setGridSize: false, // sets grid size depending on content
   compactType: CompactType.None, // compact items: 'none' | 'compactUp' | 'compactLeft' | 'compactUp&Left' | 'compactLeft&Up'
   mobileBreakpoint: 640, // if the screen is not wider that this, remove the grid layout and stack the items
+  allowMultiLayer: false,
+  defaultLayerIndex: 0,
+  maxLayerIndex: 2,
+  baseLayerIndex: 1,
   minCols: 1, // minimum amount of columns in the grid
   maxCols: 100, // maximum amount of columns in the grid
   minRows: 1, // minimum amount of rows in the grid
@@ -26,6 +31,7 @@ export const GridsterConfigService: GridsterConfig = {
   minItemRows: 1, // min item number of rows
   minItemArea: 1, // min item area: cols * rows
   maxItemArea: 2500, // max item area: cols * rows
+  rowHeightRatio: 1, // row height ratio from column width
   margin: 10,  // margin between grid items
   outerMargin: true,  // if margins will apply to the sides of the container
   outerMarginTop: null, // override outer margin for grid
@@ -71,10 +77,8 @@ export const GridsterConfigService: GridsterConfig = {
     start: undefined, // callback when dragging an item starts.
     // Arguments: item, gridsterItem, event
     dropOverItems: false, // enable drop items on top other item
-    dropOverItemsCallback: undefined, // callback on drop over another item
+    dropOverItemsCallback: undefined // callback on drop over another item
     // Arguments: source, target, gridComponent
-    dropOverItemSplit: false, // 允许Item放入另一个Item中切分目标Item的大小，开启时要保证dropOverItemStack为false
-    dropOverItemStack: false // 允许Item堆叠，即可自由布局，开启时要保证dropOverItemSplit为false
   },
   resizable: {
     delayStart: 0, // milliseconds to delay the start of resize, useful for touch interaction
@@ -106,5 +110,6 @@ export const GridsterConfigService: GridsterConfig = {
   scrollToNewItems: false, // scroll to new items placed in a scrollable view
   disableScrollHorizontal: false, // disable horizontal scrolling
   disableScrollVertical: false, // disable vertical scrolling
-  disableAutoPositionOnConflict: false  // disable auto-position of items on conflict state
+  disableAutoPositionOnConflict: false,  // disable auto-position of items on conflict state,
+  dirType: DirTypes.LTR, // page direction, rtl=right to left ltr= left to right, if you use rtl language set dirType to rtl
 };
