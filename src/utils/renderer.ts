@@ -78,7 +78,7 @@ export class Renderer {
   }
 
   
-  listen<K extends keyof HTMLElementEventMap>(target: 'window'|'document'|'body'| any, event: K, callback: (event: any) => boolean):
+  listen<K extends keyof HTMLElementEventMap>(target: 'window'|'document'|'body'| any, event: K, callback: (event: any) => any):
   () => void {
     if (typeof target === 'string') { 
       return <() => void>this.addGlobalEventListener(

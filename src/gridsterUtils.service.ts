@@ -18,15 +18,15 @@ export class GridsterUtils {
 
   static debounce(func: () => void, wait: number): () => void {
     let timeout: number | undefined;
-    return function(): void {
-      const context = this;
-      const args = arguments;
+    return function(this: any): void {
+      const context: any = this;
+      const args = arguments as any;
       const later = () => {
         timeout = undefined;
         func.apply(context, args);
       };
       clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
+      timeout = window.setTimeout(later, wait); 
     };
   }
 

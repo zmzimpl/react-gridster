@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { GridsterItem, ReactGridster, ReactGridsterItem } from 'react-gridster'
 import 'react-gridster/dist/index.css'
@@ -36,7 +36,8 @@ const itemComponent = (
 );
 
 const App = () => {
-  return (<ReactGridster options={option} >
+  const gridsterRef = useRef(null);
+  return (<ReactGridster options={option} ref={gridsterRef} >
     {itemComponent}
   </ReactGridster>)
 }
