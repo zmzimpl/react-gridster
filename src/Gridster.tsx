@@ -41,6 +41,16 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
 
   elRef: React.RefObject<HTMLDivElement>;
 
+  state = {
+    columns: 12,
+    rows: 12,
+    curWidth: 0,
+    curHeight: 0,
+    curColWidth: 0,
+    curRowHeight: 0,
+    grid: []
+  }
+
   constructor(props: Props) {
     super(props);
     this.elRef = React.createRef<HTMLDivElement>();
@@ -65,7 +75,10 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
   
   componentDidMount() {
     this.el = this.elRef.current as HTMLDivElement;
-    console.log(this.el);
+    this.columns = this.$options.minCols;
+    this.rows = this.$options.minRows;
+    this.setGridSize();
+    this.calculateLayout();
   }
 
   setOptions(): void {
@@ -222,6 +235,14 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
     this.setGridDimensions();
     this.gridColumns.length = ReactGridster.getNewArrayLength(this.columns, this.curWidth, this.curColWidth);
     this.gridRows.length = ReactGridster.getNewArrayLength(this.rows, this.curHeight, this.curRowHeight);
+    this.setState({
+      columns: this.columns,
+      rows: this.rows,
+      curWidth: this.curWidth,
+      curHeight: this.curHeight,
+      curColWidth: this.curColWidth,
+      curRowHeight: this.curRowHeight,
+    })
   }
 
   static getNewArrayLength(length: number, overallSize: number, size: number): number {
@@ -384,22 +405,18 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
   render() {
     const gridsterColumns = [];
     const gridsterRows = [];
-    console.log(this.columns);
-    console.log(this.rows);
-    for(let i = 0; i < this.columns; i++) {
+    for(let i = 0; i < this.state.columns; i++) {
       const style = this.gridRenderer.getGridColumnStyle(i);
       gridsterColumns.push(
         <div key={'grid-col-' + i} className={styles.gridsterColumn} style={style}></div>
       )
     }
-    for(let i = 0; i < this.rows; i++) {
+    for(let i = 0; i < this.state.rows; i++) {
       const style = this.gridRenderer.getGridRowStyle(i);
       gridsterRows.push(
         <div key={'grid-row-' + i} className={styles.gridsterRow} style={style}></div>
       )
     }
-    console.log(gridsterColumns);
-    console.log(gridsterRows);
     return (
       <div className={styles.gridster + ' ' + styles.displayGrid + ' ' + styles[this.$options?.gridType]} ref={this.elRef as React.RefObject<HTMLDivElement>}>
         { ...gridsterColumns }
