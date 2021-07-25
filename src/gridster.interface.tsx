@@ -22,11 +22,11 @@ export abstract class GridsterComponentInterface {
   getItemComponent?: (item: GridsterItem) => GridsterItemComponentInterface | undefined;
   el?: HTMLDivElement;
   renderer!: Renderer;
-  gridRenderer?: GridsterRenderer;
+  gridRenderer!: GridsterRenderer;
   // cdRef: ChangeDetectorRef;
   // cdRef: ChangeDetectorRef;
-  options?: GridsterConfig;
-  calculateLayoutDebounce?: () => void;
+  options!: GridsterConfig;
+  calculateLayoutDebounce!: () => void;
   updateGrid?: () => void;
   movingItem?: GridsterItem | null;
   addItem?: (item: GridsterItemComponentInterface) => void;

@@ -21,7 +21,7 @@ export abstract class GridsterItemComponentInterface {
   canBeResized!: () => boolean;
   bringToFront!: (offset: number) => void;
   sendToBack!: (v: number) => void;
-  el!: HTMLElement;
+  el!: HTMLDivElement;
   gridster!: GridsterComponentInterface;
   renderer!: Renderer;
 }
