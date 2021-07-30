@@ -1,5 +1,5 @@
 import {GridsterComponentInterface} from './gridster.interface';
-import { GridType } from './gridsterConfig.interface';
+import { DirTypes, GridType } from './gridsterConfig.interface';
 import { GridsterItem } from './gridsterItem.interface';
 import { Renderer } from './utils/renderer';
 
@@ -14,11 +14,12 @@ export class GridsterRenderer {
 
   updateItem(el: any, item: GridsterItem, renderer: Renderer) {
     if (this.gridster.mobile) {
+      console.log(this.gridster.$options)
       this.clearCellPosition(renderer, el);
       if (this.gridster.$options.keepFixedHeightInMobile) {
         renderer.setStyle(el, 'height', (item.rows * this.gridster.$options.fixedRowHeight) + 'px');
       } else {
-        renderer.setStyle(el, 'height',  (item.rows * this.gridster.curWidth / item.cols ) + 'px');
+        renderer.setStyle(el, 'height', (item.rows * this.gridster.curWidth / item.cols) + 'px');
       }
       if (this.gridster.$options.keepFixedWidthInMobile) {
         renderer.setStyle(el, 'width', this.gridster.$options.fixedColWidth + 'px');
@@ -27,34 +28,16 @@ export class GridsterRenderer {
       }
 
       renderer.setStyle(el, 'margin-bottom', this.gridster.$options.margin + 'px');
-      renderer.setStyle(el, 'margin-right', '');
+      renderer.setStyle(el, DirTypes.LTR ? 'margin-right' : 'margin-left', '');
     } else {
-      // 这里的x,y 其实是left 和 top
-      let x = 0;
-      let y = 0;
-      if (this.gridster.$options.draggable.dropOverItemStack) {
-        // 堆叠模式下，位置的不能直接通过计算过去，应该优先应用具体的位置信息
-        x = item.left !== undefined ? item.left - this.gridster.$options.margin : Math.round(this.gridster.curColWidth * item.x);
-        y = item.top !== undefined ? item.top - this.gridster.$options.margin : Math.round(this.gridster.curRowHeight * item.y);
-        if (item.zIndex) {
-          renderer.setStyle(el, 'z-index', item.zIndex);
-        }
-      } else {
-        x = Math.round(this.gridster.curColWidth * item.x);
-        y = Math.round(this.gridster.curRowHeight * item.y);
-      }
+      const x = Math.round(this.gridster.curColWidth * item.x);
+      const y = Math.round(this.gridster.curRowHeight * item.y);
       const width = this.gridster.curColWidth * item.cols - this.gridster.$options.margin;
       const height = (this.gridster.curRowHeight * item.rows - this.gridster.$options.margin);
       // set the cell style
       this.setCellPosition(renderer, el, x, y);
-      if (!this.gridster.$options.draggable.dropOverItemStack) {
-        renderer.setStyle(el, 'width', width + 'px');
-        renderer.setStyle(el, 'height', height + 'px');
-      } else {
-        // 如果item设置了宽、高，应该优先应用
-        renderer.setStyle(el, 'width', (item.width ? item.width : width) + 'px');
-        renderer.setStyle(el, 'height', (item.height ? item.height : height) + 'px');
-      }
+      renderer.setStyle(el, 'width', width + 'px');
+      renderer.setStyle(el, 'height', height + 'px');
       let marginBottom: string | null = null;
       let marginRight: string | null = null;
       if (this.gridster.$options.outerMargin) {
@@ -75,7 +58,7 @@ export class GridsterRenderer {
       }
 
       renderer.setStyle(el, 'margin-bottom', marginBottom);
-      renderer.setStyle(el, 'margin-right', marginRight);
+      renderer.setStyle(el, DirTypes.LTR ? 'margin-right' : 'margin-left', marginRight);
     }
   }
 

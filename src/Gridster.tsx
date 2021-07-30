@@ -18,7 +18,7 @@ interface Props {
 export class ReactGridster extends React.Component<Props> implements GridsterComponentInterface {
 
   calculateLayoutDebounce: () => void;
-
+  movingItem!: GridsterItem | null;
   $options: GridsterConfigS;
   options!: GridsterConfig;
   columns = 0;
@@ -259,6 +259,14 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
     return 0;
   }
 
+  removeItem(itemComponent: GridsterItemComponentInterface): void {
+    this.grid.splice(this.grid.indexOf(itemComponent), 1);
+    this.calculateLayoutDebounce();
+    if (this.options.itemRemovedCallback) {
+      this.options.itemRemovedCallback(itemComponent.item, itemComponent);
+    }
+  }
+
   checkCollision(item: GridsterItem): GridsterItemComponentInterface | boolean {
     let collision: GridsterItemComponentInterface | boolean = false;
     if (this.options.itemValidateCallback) {
@@ -319,6 +327,36 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
     return a;
   }
 
+  pixelsToPositionX(x: number, roundingMethod: (x: number) => number, noLimit?: boolean): number {
+    const position = roundingMethod(x / this.curColWidth);
+    if (noLimit) {
+      return position;
+    } else {
+      return Math.max(position, 0);
+    }
+  }
+
+  pixelsToPositionY(y: number, roundingMethod: (x: number) => number, noLimit?: boolean): number {
+    const position = roundingMethod(y / this.curRowHeight);
+    if (noLimit) {
+      return position;
+    } else {
+      return Math.max(position, 0);
+    }
+  }
+
+  positionXToPixels(x: number): number {
+    return x * this.curColWidth;
+  }
+
+  positionYToPixels(y: number): number {
+    return y * this.curRowHeight;
+  }
+
+  getItemComponent(item: GridsterItem): GridsterItemComponentInterface | undefined {
+    return this.grid.find(c => c.item === item);
+  }
+
   checkCollisionTwoItems(item: GridsterItem, item2: GridsterItem): boolean {
     const collision = item.x < item2.x + item2.cols
       && item.x + item.cols > item2.x
@@ -341,6 +379,7 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
   setGridDimensions(): void {
     this.setGridSize();
     if (!this.mobile && this.$options.mobileBreakpoint > this.curWidth) {
+      console.log(1);
       this.mobile = !this.mobile;
       this.renderer.addClass(this.el, 'mobile');
     } else if (this.mobile && this.$options.mobileBreakpoint < this.curWidth) {
@@ -400,6 +439,18 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
       }
     }
     return false;
+  }
+
+  previewStyle(drag = false): void {
+    if (this.movingItem) {
+      if (this.compact && drag) {
+        this.compact.checkCompactItem(this.movingItem);
+      }
+      // TODO previewStyle$ 处理
+      // this.previewStyle$.next(this.movingItem);
+    } else {
+      // this.previewStyle$.next();
+    }
   }
 
   addItem(itemComponent: GridsterItemComponentInterface): void {
@@ -481,24 +532,41 @@ export class ReactGridster extends React.Component<Props> implements GridsterCom
     return false;
   }
 
-
-  render() {
-    const gridsterColumns = [];
-    const gridsterRows = [];
+  buildColumns(): JSX.Element[] {
+    const gridsterColumns: JSX.Element[] = [];
     for(let i = 0; i < this.state.columns; i++) {
       const style = this.gridRenderer.getGridColumnStyle(i);
       gridsterColumns.push(
-        <div key={'grid-col-' + i} className={styles.gridsterColumn} style={style}></div>
+        <div key={'grid-col-' + i} className={'gridster-column'} style={style}></div>
       )
     }
+    return gridsterColumns;
+  }
+
+  buildRows(): JSX.Element[] {
+    const gridsterRows: JSX.Element[] = [];
     for(let i = 0; i < this.state.rows; i++) {
       const style = this.gridRenderer.getGridRowStyle(i);
       gridsterRows.push(
-        <div key={'grid-row-' + i} className={styles.gridsterRow} style={style}></div>
+        <div key={'grid-row-' + i} className={'gridster-row'} style={style}></div>
       )
     }
+    return gridsterRows;
+  }
+
+  buildClassName(): string {
+    const className = ['gridster'];
+    className.push(styles.reactGridster);
+    return className.join(' ');
+  }
+
+
+  render() {
+    const gridsterColumns = this.buildColumns();
+    const gridsterRows = this.buildRows();
+
     return (
-      <div className={styles.gridster + ' ' + styles.displayGrid + ' ' + styles[this.$options?.gridType]} ref={this.elRef as React.RefObject<HTMLDivElement>}>
+      <div className={this.buildClassName()} ref={this.elRef as React.RefObject<HTMLDivElement>}>
         { ...gridsterColumns }
         { ...gridsterRows }
         {this.props.children}

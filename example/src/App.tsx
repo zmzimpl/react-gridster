@@ -14,7 +14,7 @@ const App = () => {
     maxCols: 32,
     minRows: 21,
     maxRows: 21,
-    margin: 1,
+    margin: 4,
     gridType: 'fit',
     displayGrid: 'always',
     enableEmptyCellClick: false,

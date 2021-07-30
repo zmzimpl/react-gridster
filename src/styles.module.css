@@ -1,5 +1,8 @@
 
-.gridster {
+.reactGridster {
+  
+}
+:global .gridster {
   position: relative;
   box-sizing: border-box;
   background: grey;
@@ -9,51 +12,55 @@
   display: block;
 }
 
-.gridster.fit {
+:global .gridster.fit {
   overflow-x: hidden;
   overflow-y: hidden;
 }
 
-.gridster.scrollVertical {
+:global .gridster.scrollVertical {
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-.gridster.scrollHorizontal {
+:global .gridster.scrollHorizontal {
   overflow-x: auto;
   overflow-y: hidden;
 }
 
-.gridster.fixed {
+:global .gridster.fixed {
   overflow: auto;
 }
 
-.gridster.mobile {
+:global .gridster.mobile {
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-.gridster.mobile gridsterItem {
+:global .gridster.mobile .gridsterItem {
   position: relative;
 }
 
-.gridster .gridsterColumn, .gridster .gridsterRow {
+:global .gridster .gridster-column, :global .gridster .gridster-row {
   position: absolute;
   display: none;
   transition: .3s;
   box-sizing: border-box;
 }
 
-.gridster.displayGrid .gridsterColumn, .gridster.displayGrid .gridsterRow {
+:global .gridster.display-grid .gridster-column, :global .gridster.display-grid .gridster-row {
   display: block;
 }
 
-.gridster .gridsterColumn {
+:global .gridster .gridster-column {
+  position: absolute;
+  display: none;
+  transition: .3s;
+  box-sizing: border-box;
   border-left: 1px solid white;
   border-right: 1px solid white;
 }
 
-.gridster .gridsterRow {
+:global .gridster .gridster-row {
   border-top: 1px solid white;
   border-bottom: 1px solid white;
 }

@@ -4,6 +4,16 @@
 
 [![NPM](https://img.shields.io/npm/v/react-gridster.svg)](https://www.npmjs.com/package/react-gridster) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
+## Todo List
+- [x] Responsive layouts
+- [x] Mobile support
+- [ ] Draggable
+- [ ] Resizable
+- [ ] Multiple stacking
+- [ ] Multiple selecting
+- [ ] Multiple moving
+- [ ] Dragover to split item
+
 ## Install
 
 ```bash
